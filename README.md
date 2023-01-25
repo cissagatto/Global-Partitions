@@ -130,7 +130,7 @@ Rscript global.R [absolute_path_to_config_file]
 Example:
 
 ```
-Rscript global.R "~/Global-Partitions/config-files/clus/g-clus-GpositiveGO.csv"
+Rscript global.R "~/Global-Partitions/config-files/clus/g-GpositiveGO.csv"
 ```
 
 ## RESULTS
