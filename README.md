@@ -4,6 +4,11 @@ This code is part of my doctoral research at PPG-CC/DC/UFSCar. The aim is build 
 ## How to cite 
 @misc{Gatto2023, author = {Gatto, E. C.}, title = {Global Partitions for Multilabel Classification with Clus}, year = {2022}, publisher = {GitHub}, journal = {GitHub repository}, howpublished = {\url{https://github.com/cissagatto/Global-Partitions}}}
 
+
+## HPML Schematic
+<img src="https://github.com/cissagatto/Global-Partitions/blob/main/HPML-ALL-VERSIONS.png" width="700">
+
+
 ## Source Code
 This code source is composed of the project R to be used in RStudio IDE and also the following scripts R:
 
