@@ -1,0 +1,8 @@
+Config, Value
+Dataset_Path, /home/biomal/Datasets
+Temporary_Path, /dev/shm/eg-GpositiveGO
+Implementation, mulan
+dataset_name, GpositiveGO
+number_dataset, 41
+number_folds, 10
+number_cores, 1

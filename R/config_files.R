@@ -77,7 +77,7 @@ while(w<=length(pacote)){
     
     # Confi File Name
     # "~/Global-Partitions/config-files/utiml/eg-3s-bbc1000.csv"
-    file_name = paste(FolderPa, "/eg-", ds$Name, ".csv", sep="")
+    file_name = paste(FolderPa, "/g-", ds$Name, ".csv", sep="")
     
     # Starts building the configuration file
     output.file <- file(file_name, "wb")
