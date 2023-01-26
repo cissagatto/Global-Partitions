@@ -67,7 +67,7 @@ A file called _datasets-original.csv_ must be in the *root project folder*. This
 
 
 ## STEP 2
-To run this experiment you need the _X-Fold Cross-Validation_ files and they must be compacted in **tar.gz** format. You can download these files, with 10-folds, ready for multiple multilabel dataset by clicking [here](https://1drv.ms/u/s!Aq6SGcf6js1mrZJSfd6FpToCtGVqJw?e=H0pwK5). For a new dataset, in addition to including it in the **datasets-original.csv** file, you must also run this code [here](https://github.com/cissagatto/crossvalidationmultilabel). In the repository in question you will find all the instructions needed to generate the files in the format required for this experiment. The **tar.gz** file can be placed on any folder on your computer or cluster. The absolute path of the file should be passed as a parameter in the configuration file that will be read by **global.R** script. The dataset will be loaded from there.
+To run this experiment you need the _X-Fold Cross-Validation_ files and they must be compacted in **tar.gz** format. You can download these files, with 10-folds, ready for multiple multilabel dataset by clicking [here](https://1drv.ms/u/s!Aq6SGcf6js1mrZJSkZ3VEJ217rEd5A?e=IH73m3). For a new dataset, in addition to including it in the **datasets-original.csv** file, you must also run this code [here](https://github.com/cissagatto/crossvalidationmultilabel). In the repository in question you will find all the instructions needed to generate the files in the format required for this experiment. The **tar.gz** file can be placed on any folder on your computer or cluster. The absolute path of the file should be passed as a parameter in the configuration file that will be read by **global.R** script. The dataset will be loaded from there.
 
 
 ## STEP 3
@@ -139,7 +139,7 @@ The results are stored in a folder called REPORTS in the project root.
 
 ## DOWNLOAD RESULTS
 
-| Clus | Mulan | Python | Utiml
+| [Clus](https://1drv.ms/u/s!Aq6SGcf6js1mrY08rN0JOc8N1MobGQ?e=QgtSa8) | [Ecc Mulan](https://1drv.ms/u/s!Aq6SGcf6js1msssPA1B_4_coQXhJww?e=F64WfJ) | [Ecc Python](https://1drv.ms/u/s!Aq6SGcf6js1mw4kQGe9dsDdEWGHQ9Q?e=8rXssI) | [Ecc Utiml](https://1drv.ms/u/s!Aq6SGcf6js1msssQykOlMA1FKm3GBw?e=yC26i6)
 
 ## Acknowledgment
 
