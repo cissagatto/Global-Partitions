@@ -1,6 +1,7 @@
 # Global Partitions
 This code is part of my doctoral research at PPG-CC/DC/UFSCar. The aim is build and test global partitions for multilabel classification.
 
+
 ## How to cite 
 @misc{Gatto2023, author = {Gatto, E. C.}, title = {Global Partitions for Multilabel Classification with Clus}, year = {2022}, publisher = {GitHub}, journal = {GitHub repository}, howpublished = {\url{https://github.com/cissagatto/Global-Partitions}}}
 
@@ -25,6 +26,7 @@ This code source is composed of the project R to be used in RStudio IDE and also
 11. global.R
 12. config_files.R
 13. jobs.R
+
 
 ## Preparing your experiment
 
@@ -63,18 +65,17 @@ A file called _datasets-original.csv_ must be in the *root project folder*. This
 
 ** [Click here](https://link.springer.com/book/10.1007/978-3-319-41111-8) to get explanation about each property.
 
+
 ## STEP 2
 To run this experiment you need the _X-Fold Cross-Validation_ files and they must be compacted in **tar.gz** format. You can download these files, with 10-folds, ready for multiple multilabel dataset by clicking [here](https://1drv.ms/u/s!Aq6SGcf6js1mrZJSfd6FpToCtGVqJw?e=H0pwK5). For a new dataset, in addition to including it in the **datasets-original.csv** file, you must also run this code [here](https://github.com/cissagatto/crossvalidationmultilabel). In the repository in question you will find all the instructions needed to generate the files in the format required for this experiment. The **tar.gz** file can be placed on any folder on your computer or cluster. The absolute path of the file should be passed as a parameter in the configuration file that will be read by **global.R** script. The dataset will be loaded from there.
+
 
 ## STEP 3
 You need to have installed all the Java, R and Python libraries required to execute this code on your machine. This code does not provide any type of automatic package installation!
 
+
 ## STEP 4
-You can use the Conda environment that I created to perform this experiment. Below are the links to download the files.
-
-| [download txt](https://www.4shared.com/s/fUCVTl13zea) | [download yml](https://www.4shared.com/s/f8nOZyxj9iq) | [download yaml](https://www.4shared.com/s/fk5Io4faLiq) |
-
-Try to use the command below to extract the environment to your computer:
+You can use the [Conda Environment](https://1drv.ms/u/s!Aq6SGcf6js1mw4hbhU9Raqarl8bH8Q?e=IA2aQs) that I created to perform this experiment. Below are the links to download the files. Try to use the command below to extract the environment to your computer:
 
 ```
 conda env create -file AmbienteTeste.yaml
@@ -82,7 +83,7 @@ conda env create -file AmbienteTeste.yaml
 
 See more information about Conda environments [here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) 
 
-You can also run this code using the [container]() that I'm using to run this code in a SLURM cluster. Please, check this tutorial (in portuguese) to see how to do that. 
+You can also run this code using the AppTainer [container](https://1drv.ms/u/s!Aq6SGcf6js1mw4hcVuz_IN8_Bh1oFQ?e=5NuyxX) that I'm using to run this code in a SLURM cluster. Please, check this [tutorial](https://rpubs.com/cissagatto/apptainer-slurm-r) (in portuguese) to see how to do that. 
 
 
 ## STEP 5
