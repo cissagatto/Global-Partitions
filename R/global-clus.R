@@ -287,6 +287,7 @@ execute.clus <- function(ds,
     cat("\n")
     
     ####################################################################################
+    zero = paste(dataset_name, "-Split-", i, ".out", sep="")
     um = paste(dataset_name, "-Split-", i, ".model", sep="")
     dois = paste(dataset_name, "-Split-", i, ".s", sep="")
     tres = paste(dataset_name, "-Split-Tr-", i, ".arff", sep="")
@@ -296,6 +297,7 @@ execute.clus <- function(ds,
     sete = paste(dataset_name, "-Split-", i, ".", sep="")
     
     setwd(FolderSplit)
+    unlink(zero, recursive = TRUE)
     unlink(um, recursive = TRUE)
     unlink(dois, recursive = TRUE)
     unlink(tres, recursive = TRUE)
