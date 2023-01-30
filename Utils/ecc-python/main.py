@@ -17,12 +17,16 @@ if __name__ == '__main__':
     x_train = train.drop(allLabels, axis=1)
     y_train = train[allLabels]
     x_test = test.drop(allLabels, axis=1)
+    
     ecc = ECC(baseModel,
-            n_chains)
+            n_chains,
+            clk)
+    
     ecc.fit(x_train,
             y_train,
             clusters,
             )
+    
     test_predictions = pd.DataFrame(ecc.predict(x_test))
     train_predictions = pd.DataFrame(ecc.predict(x_train))
     test_predictions.to_csv("y_pred.csv", index=False)

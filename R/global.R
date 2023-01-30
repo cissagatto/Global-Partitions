@@ -75,9 +75,9 @@ cat("\n#####################################\n\n")
 args <- commandArgs(TRUE)
 
 # config_file = "/home/biomal/Global-Partitions/config-files/clus/eg-GpositiveGO.csv"
-# config_file = "/home/biomal/Global-Partitions/config-files/python/eg-GpositiveGO.csv"
+# config_file = "/home/biomal/Global-Partitions/config-files/python/g-GpositiveGO.csv"
 # config_file = "/home/biomal/Global-Partitions/config-files/mulan/eg-GpositiveGO.csv"
-# config_file = "/home/biomal/Global-Partitions/config-files/utiml/python/eg-GpositiveGO.csv"
+# config_file = "/home/biomal/Global-Partitions/config-files/python/g-GpositiveGO.csv"
 
 config_file <- args[1]
 

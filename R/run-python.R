@@ -1,4 +1,3 @@
-
 ##############################################################################
 # GLOBAL PARTITIONS                                                          #
 # Copyright (C) 2023                                                         #
@@ -87,15 +86,16 @@ run.ecc.python <- function(ds,
   cat("\n# RUN: Gather Files                                  #")
   cat("\n######################################################\n\n")
   time.gather.files = system.time(gather.files.python(ds, 
-                                                      dataset_name, 
-                                                      number_folds,
+                                                      dataset_name,
+                                                      number_dataset, 
                                                       number_cores, 
+                                                      number_folds, 
                                                       folderResults))
   
   
   
   cat("\n\n############################################################")
-  cat("\n# RUN: Execute ECC MULAN GLOBAL                            #")
+  cat("\n# RUN: Execute ECC GLOBAL                            #")
   cat("\n############################################################\n\n")
   time.execute = system.time(execute.global.python(ds, 
                                                    dataset_name, 

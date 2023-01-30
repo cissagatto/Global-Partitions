@@ -1,5 +1,5 @@
 ###############################################################################
-# Global Partitions with Clus                                                 #
+# Global Partitions with PYTHON                                                 #
 # Copyright (C) 2022                                                          #
 #                                                                             #
 # This code is free software: you can redistribute it and/or modify it under  #
@@ -30,7 +30,7 @@ FolderScripts = "~/Global-Partitions/R"
 # FUNCTION GATHER FILES FOLDS GLOBAL                                          #
 #   Objective                                                                 #
 #       Joins the configuration, training and test files in a single folder   #
-#     running the clus                                                        #
+#     running the PYTHON                                                        #
 #   Parameters                                                                #
 #       ds: specific dataset information                                      #
 #       dataset_name: dataset name. It is used to save files                  #
@@ -39,7 +39,12 @@ FolderScripts = "~/Global-Partitions/R"
 #   Return                                                                    #
 #       configurations files                                                  #
 ###############################################################################
-gather.files.mulan <- function(ds, dataset_name, number_folds, folderResults){
+gather.files.python <- function(ds, 
+                                dataset_name,
+                                number_dataset, 
+                                number_cores, 
+                                number_folds, 
+                                folderResults){
   
   f = 1
   # foldsParalel <- foreach(f = 1:number_folds) %dopar% {
@@ -48,8 +53,8 @@ gather.files.mulan <- function(ds, dataset_name, number_folds, folderResults){
     cat("\nFold: ", f)
     
     ###########################################################################
-    FolderRoot = "~/Global-Partitions/"
-    FolderScripts = paste(FolderRoot, "/R/", sep="")
+    FolderRoot = "~/Global-Partitions"
+    FolderScripts = "~/Global-Partitions/R"
     
     ###########################################################################
     setwd(FolderScripts)
@@ -69,9 +74,6 @@ gather.files.mulan <- function(ds, dataset_name, number_folds, folderResults){
     nome.tr.csv = paste(dataset_name, "-Split-Tr-", f, ".csv", sep="")
     nome.ts.csv = paste(dataset_name, "-Split-Ts-", f, ".csv", sep="")
     nome.vl.csv = paste(dataset_name, "-Split-Vl-", f, ".csv", sep="")
-    nome.tr.arff = paste(dataset_name, "-Split-Tr-", f, ".arff", sep="")
-    nome.ts.arff = paste(dataset_name, "-Split-Ts-", f, ".arff", sep="")
-    nome.config.s = paste(dataset_name, "-Split-", f, ".s", sep="")
     
     # train
     setwd(diretorios$folderCVTR)
@@ -100,73 +102,20 @@ gather.files.mulan <- function(ds, dataset_name, number_folds, folderResults){
       file.copy(copia, cola, overwrite = TRUE)
     }
     
-    
-    ##########################################################################
-    setwd(FolderSplit)
-    validation = data.frame(read.csv(nome.vl.csv))
-    train = data.frame(read.csv(nome.tr.csv))
-    test = data.frame(read.csv(nome.ts.csv))
-    
-    treino = rbind(train, validation)
-    
-    ##########################################################################
-    unlink(nome.tr.csv)
-    nome.tr.csv = paste(dataset_name, "-Split-Tr-", f, ".csv", sep="")
-    write.csv(treino, nome.tr.csv, row.names = FALSE)
-    
-    ##########################################################################
-    inicio = ds$LabelStart
-    fim = ncol(treino)
-    ifr = data.frame(inicio, fim)
-    write.csv(ifr, "inicioFimRotulos.csv", row.names = FALSE)
-    
-    ##########################################################################
-    arg1Tr = nome.tr.csv
-    arg2Tr = nome.tr.arff
-    arg3Tr = paste(inicio, "-", fim, sep="")
-    converteArff(arg1Tr, arg2Tr, arg3Tr, diretorios$folderUtils)
-    
-    ##########################################################################
-    str0 = paste("sed -i 's/{0}/{0,1}/g;s/{1}/{0,1}/g' ", nome.tr.arff, sep="")
-    cat("\n")
-    print(system(str0))
-    cat("\n")
-    
-    ##########################################################################
-    arg1Ts = nome.ts.csv
-    arg2Ts = nome.ts.arff
-    arg3Ts = paste(inicio, "-", fim, sep="")
-    converteArff(arg1Ts, arg2Ts, arg3Ts, diretorios$folderUtils)
-    
-    ##########################################################################
-    str0 = paste("sed -i 's/{0}/{0,1}/g;s/{1}/{0,1}/g' ", nome.ts.arff, sep="")
-    cat("\n")
-    print(system(str0))
-    cat("\n")
-    
-    ##########################################################################
-    indices = seq(inicio, fim, by=1)
-    
-    ##########################################################################
-    unlink(nome.ts.csv)
-    unlink(nome.tr.csv)
-    unlink(nome.vl.csv)
-    
-    ##########################################################################
     f = f + 1
     gc()
   }
   
   gc()
   cat("\n#################################################################")
-  cat("\n# GLOBAL CLUS: END OF THE GATHER FILES FOLDS FUNCTION           #")
+  cat("\n# GLOBAL PYTHON: END OF THE GATHER FILES FOLDS FUNCTION           #")
   cat("\n#################################################################")
   cat("\n\n")
 }
 
 
 ##############################################################################
-# FUNCTION EXECUTE CLUS GLOBAL                                               #
+# FUNCTION EXECUTE PYTHON GLOBAL                                               #
 #   Objective                                                                #
 #       Tests global partitions                                              #
 #   Parameters                                                               #
@@ -177,22 +126,22 @@ gather.files.mulan <- function(ds, dataset_name, number_folds, folderResults){
 #   Return                                                                   #
 #       configurations files                                                 #
 ##############################################################################
-execute.global.mulan <- function(ds, 
+execute.global.python <- function(ds, 
                                  dataset_name, 
                                  number_folds, 
                                  number_cores, 
                                  folderResults){
   
   f = 1
-  clusGlobalParalel <- foreach(f = 1:number_folds) %dopar%{
+  PYTHONGlobalParalel <- foreach(f = 1:number_folds) %dopar%{
     # while(f<=number_folds){
     
     #########################################################################
     cat("\nFold: ", f)
     
     ##########################################################################
-    FolderRoot = "~/Global-Partitions/"
-    FolderScripts = paste(FolderRoot, "/R/", sep="")
+    FolderRoot = "~/Global-Partitions"
+    FolderScripts = "~/Global-Partitions/R"
     
     ##########################################################################
     setwd(FolderScripts)
@@ -210,145 +159,78 @@ execute.global.mulan <- function(ds,
     
     
     ##########################################################################
-    inicio = ds$LabelStart
-    fim = ds$LabelEnd
-    indices = seq(inicio, fim, by = 1)
-    
-    
-    ##########################################################################
     train.file.name = paste(FolderSplit, "/", dataset_name, 
-                            "-Split-Tr-", f , ".arff", sep="")
+                            "-Split-Tr-", f , ".csv", sep="")
     
     test.file.name = paste(FolderSplit, "/", dataset_name, 
-                           "-Split-Ts-", f, ".arff", sep="")
+                           "-Split-Ts-", f, ".csv", sep="")
     
+    val.file.name = paste(FolderSplit, "/", dataset_name, 
+                            "-Split-Vl-", f , ".csv", sep="")
     
     ##########################################################################
     setwd(FolderSplit)
-    train.2 = data.frame(foreign::read.arff(train.file.name))
-    train.3 = data.frame(apply(train.2, 2, as.numeric))
-    test.2 = data.frame(foreign::read.arff(test.file.name))
-    test.3 = data.frame(apply(test.2, 2, as.numeric))
+    train = data.frame(read.csv(train.file.name))
+    test = data.frame(read.csv(test.file.name))
+    val = data.frame(read.csv(val.file.name))
     
-    ##########################################################################
-    labels = colnames(train.2[,ds$LabelStart:ds$LabelEnd])
+    ##################################################################
+    # EXECUTE ECC PYTHON
+    str.execute = paste("python3 ", diretorios$folderUtils,
+                        "/skml/main.py ", 
+                        train.file.name, " ",
+                        val.file.name,  " ",
+                        test.file.name, " ", 
+                        start = as.numeric(ds$AttEnd), " ", 
+                        FolderSplit,
+                        sep="")
     
+    # EXECUTA
+    res = print(system(str.execute))
     
-    ##########################################################################
-    y_true = select(test.2, labels)
+    if(res!=0){
+      break
+    }
+    
+    # str.1 = paste("mv ", FolderScripts, "/y_pred.csv ", Folder.Tested.Split, sep="")
+    # str.2 = paste("mv ", FolderScripts, "/y_true.csv ", Folder.Tested.Split, sep="")
+    # print(system(str.1))
+    # print(system(str.2))
+    
     setwd(FolderSplit)
-    write.csv(y_true, "y_true.csv", row.names = FALSE)
+    y_preds = data.frame(read.csv("y_pred.csv"))
+    y_trues = data.frame(read.csv("y_true.csv"))
     
-    ##########################################################################
-    train.file.name.2 = paste(FolderSplit, "/", dataset_name, 
-                              "-Split-Tr-", f , "-2.arff", sep="")
-    
-    test.file.name.2 = paste(FolderSplit, "/", dataset_name, 
-                             "-Split-Ts-", f, "-2.arff", sep="")
-    
-    system(paste("mv ", train.file.name, " " , train.file.name.2, sep=""))
-    system(paste("mv ", test.file.name, " " , test.file.name.2, sep=""))
-    
-    ##############################################
-    str.tr = paste(ds$Name, "-Split-Tr-", f,
-                   "-weka.filters.unsupervised.attribute.NumericToNominal-R",
-                   inicio, "-", fim, sep="")
-    
-    train.4 <- mldr::mldr_from_dataframe(dataframe = train.3,
-                                         labelIndices = indices)
-    #name = str.tr
-    
-    train.xml.name = paste(FolderSplit, "/", ds$Name, "-Split-Tr-", f, sep="")
-    mldr::write_arff(train.4, train.xml.name, write.xml = T)
-    
-    
-    #############################################
-    str.ts = paste(ds$Name, "-Split-Ts-", f,
-                   "-weka.filters.unsupervised.attribute.NumericToNominal-R",
-                   inicio, "-", fim, sep="")
-    
-    test.4 <- mldr::mldr_from_dataframe(dataframe = test.3,
-                                        labelIndices = indices)
-    
-    test.xml.name = paste(FolderSplit, "/", ds$Name, "-Split-Ts-", f, sep="")
-    mldr::write_arff(test.4, test.xml.name, write.xml = T)
     
     #####################################################################
-    # cat("\nConfigura a linha de comando")
-    # mulan = paste("/usr/lib/jvm/java-1.8.0-openjdk-amd64/bin/java -Xmx8g -jar ", 
-    #              diretorios$folderUtils, "/mymulanexec.jar", sep="")
+    cat("\n\tSave original and pruned predictions\n")
+    pred.o = paste(colnames(y_preds), "-pred", sep="")
+    names(y_preds) = pred.o
     
-    mulan = paste("/home/u704616/miniconda3/envs/AmbienteTeste/bin/java -Xmx8g -jar ", 
-                  diretorios$folderUtils, "/mymulanexec.jar", sep="")
+    true.labels = paste(colnames(y_trues), "-true", sep="")
+    names(y_trues) = true.labels
     
-    str = paste(FolderSplit, "/predict-fold-", f, ".csv", sep="")
-    
-    mulanst = paste(mulan, " -t ", train.file.name, " -T ", 
-                    test.file.name, " -x ", train.xml.name,
-                    ".xml -o out.csv -a ECC -c J48", sep = "")
-    # print(mulanst)
-    
-    #################################
-    # cat("\nExecuta o ECC do MULAN")
-    time.mulan <- system.time(system(mulanst))
-    result <- t(data.matrix(time.mulan))
-    setwd(diretorios$folderGlobal)
-    write.csv(result, "time-mulan.csv")
-    
-    # cat("\nObtém as predições")
+    all.predictions = cbind(y_preds, y_trues)
     setwd(FolderSplit)
-    preds <- as.matrix(read.csv("pred_out.csv", header = FALSE))
+    write.csv(all.predictions, "folder-predictions.csv", row.names = FALSE)
     
-    # cat("\nAbrindo o arquivo de teste gerado aqui")
-    test_name_group = paste(FolderSplit, "/", ds$Name, 
-                            "-Split-Ts-", f, sep="")
-    test.file. <- mldr(test_name_group, force_read_from_file = T)
+    # names files
+    nome.tr.csv = paste(dataset_name, "-Split-Tr-", f, ".csv", sep="")
+    nome.ts.csv = paste(dataset_name, "-Split-Ts-", f, ".csv", sep="")
+    nome.vl.csv = paste(dataset_name, "-Split-Vl-", f, ".csv", sep="")
     
-    # cat("\nCalculando os resultados - threshold 0.5 default")
-    result <- multilabel_evaluate(test.file., preds, labels=TRUE)
-    preds = data.frame(preds)
-    colnames(preds) = labels
-    
-    # cat("\nAplicando thresold no resultado")
-    threshold <- scut_threshold(preds, test.file., cores = number_cores)
-    new.test <- fixed_threshold(preds, threshold)
-    new.test.2 = as.matrix(new.test)
-    new.test.3 = data.frame(new.test.2)
-    
-    # cat("\nSALVANDO OS Y PREDICT")
-    y_pred = data.frame(new.test.3)
-    colnames(y_pred) = labels
-    setwd(FolderSplit)
-    write.csv(y_pred, "y_pred.csv", row.names = FALSE)
-    
-    # cat("\nMatriz de confusão")
-    matriz_confusao = multilabel_confusion_matrix(test.file., preds)
-    nome_config = paste(FolderSplit, "/matriz_confusao_fold_", 
-                        f, ".txt", sep="")
-    sink(nome_config, type = "output")
-    print(matriz_confusao)
-    cat("\n")
-    sink()
-    
-    # APAGANDO
-    setwd(FolderSplit)
-    unlink("inicioFimRotulos.csv")
-    unlink("pred_out.csv")
-    unlink(train.file.name)
-    unlink(train.file.name.2)
-    unlink(test.file.name)
-    unlink(test.file.name.2)
-    unlink(paste(test.xml.name, ".xml", sep=""))
-    unlink(paste(train.xml.name, ".xml", sep=""))
+    unlink(nome.tr.csv)
+    unlink(nome.ts.csv)
+    unlink(nome.vl.csv)
     
     
-    # f = f + 1
+    #f = f + 1
     gc()
   }
   
   gc()
   cat("\n###################################################################")
-  cat("\n# GLOBAL CLUS: END OF FUNCTION EXECUTE CLUS                       #")
+  cat("\n# GLOBAL PYTHON: END OF FUNCTION EXECUTE PYTHON                       #")
   cat("\n###################################################################")
   cat("\n\n")
 }
@@ -367,7 +249,7 @@ execute.global.mulan <- function(ds,
 #   Return:                                                                                      #
 #       Confusion Matrix                                                                         #
 ##################################################################################################
-evaluate.global.mulan <- function(ds,
+evaluate.global.python <- function(ds,
                                   dataset_name,
                                   number_folds,
                                   number_cores,
@@ -426,6 +308,9 @@ evaluate.global.mulan <- function(ds,
     setwd(FolderSplit)
     write.csv(resConfMat, "ResConfMat.csv")
     
+    unlink("y_pred.csv")
+    unlink("y_true.csv")
+    
     #f = f + 1
     gc()
   }
@@ -452,7 +337,7 @@ evaluate.global.mulan <- function(ds,
 #   Return                                                                                       #
 #       Assessment measures for each global partition                                            #
 ##################################################################################################
-gather.eval.mulan <- function(ds, 
+gather.eval.global.python <- function(ds, 
                               dataset_name, 
                               number_folds, 
                               number_cores, 
@@ -493,8 +378,9 @@ gather.eval.mulan <- function(ds,
   
   cat("\nsave measures")
   names(confMatFinal) = c("Measures", folds)
-  setwd(diretorios$folderGlobal)
-  write.csv(confMatFinal, "All-Folds-Global.csv", row.names = FALSE)
+  write.csv(confMatFinal, 
+            paste(diretorios$folderGlobal, "/All-Folds-Global.csv", sep=""),
+            row.names = FALSE)
   
   # cat("\nadjust")
   # confMatFinal2 = data.frame(t(confMatFinal))
@@ -516,22 +402,27 @@ gather.eval.mulan <- function(ds,
   names(media) = c("Measures", "Mean10Folds")
   
   setwd(diretorios$folderGlobal)
-  write.csv(media, "Mean10Folds.csv", row.names = FALSE)
+  write.csv(media, 
+            paste(diretorios$folderGlobal, "/Mean10Folds.csv", sep=""), 
+            row.names = FALSE)
   
   mediana = data.frame(apply(confMatFinal[,-1], 1, median))
   mediana = cbind(measures, mediana)
   names(mediana) = c("Measures", "Median10Folds")
   
   setwd(diretorios$folderGlobal)
-  write.csv(mediana, "Median10Folds.csv", row.names = FALSE)
+  write.csv(mediana, 
+            paste(diretorios$folderGlobal, "/Median10Folds.csv", sep=""),
+            row.names = FALSE)
   
   dp = data.frame(apply(confMatFinal[,-1], 1, sd))
   dp = cbind(measures, dp)
   names(dp) = c("Measures", "SD10Folds")
   
   setwd(diretorios$folderGlobal)
-  write.csv(dp, "desvio-padrão-10-folds.csv", row.names = FALSE)
-  
+  write.csv(dp,  
+            paste(diretorios$folderGlobal, "/desvio-padrão-10-folds.csv", sep=""), 
+            row.names = FALSE)
   gc()
   cat("\n##################################################################################################")
   cat("\n# PYTHON GLOBAL: END OF THE FUNCTION GATHER EVALUATED                                              #") 
