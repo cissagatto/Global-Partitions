@@ -76,7 +76,7 @@ args <- commandArgs(TRUE)
 
 # config_file = "/home/biomal/Global-Partitions/config-files/clus/eg-GpositiveGO.csv"
 # config_file = "/home/biomal/Global-Partitions/config-files/python/g-GpositiveGO.csv"
-# config_file = "/home/biomal/Global-Partitions/config-files/mulan/eg-GpositiveGO.csv"
+# config_file = "/home/biomal/Global-Partitions/config-files/mulan/g-GpositiveGO.csv"
 # config_file = "/home/biomal/Global-Partitions/config-files/python/g-GpositiveGO.csv"
 
 config_file <- args[1]

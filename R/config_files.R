@@ -50,18 +50,18 @@ if(dir.exists(FolderCF)==FALSE){dir.create(FolderCF)}
 
 
 ###############################################################################
-# QUAL PACOTE USAR
+# QUAL Implementation USAR
 ###############################################################################
-pacote = c("utiml", "mulan", "python", "clus")
+Implementation = c("utiml", "mulan", "python", "clus")
 
 
 ###############################################################################
 # CREATING CONFIG FILES FOR EACH DATASET                                      #
 ###############################################################################
 w = 1
-while(w<=length(pacote)){
+while(w<=length(Implementation)){
   
-  FolderPa = paste(FolderCF, "/", pacote[w], sep="")
+  FolderPa = paste(FolderCF, "/", Implementation[w], sep="")
   if(dir.exists(FolderPa)==FALSE){dir.create(FolderPa)}
   
   i = 1
@@ -73,7 +73,7 @@ while(w<=length(pacote)){
     # print the dataset name
     cat("\n================================================")
     cat("\n\tDataset:", ds$Name)
-    cat("\n\tPackge:", pacote[w])
+    cat("\n\tPackge:", Implementation[w])
     
     # Confi File Name
     # "~/Global-Partitions/config-files/utiml/eg-3s-bbc1000.csv"
@@ -83,8 +83,7 @@ while(w<=length(pacote)){
     output.file <- file(file_name, "wb")
     
     # Config file table header
-    write("Config, Value",
-          file = output.file, append = TRUE)
+    write("Config, Value", file = output.file, append = TRUE)
     
     # Absolute path to the folder where the dataset's "tar.gz" is stored
     # write("Dataset_Path, \"/home/u704616/Datasets\"", 
@@ -96,43 +95,45 @@ while(w<=length(pacote)){
     # write("Dataset_Path, ~/Global-Partitions/Datasets", 
     #      file = output.file, append = TRUE)
     
-    write("Dataset_Path, /home/biomal/Datasets", 
+    # write("Dataset_Path, /home/biomal/Datasets", 
+    #      file = output.file, append = TRUE)
+    
+    write("Dataset_Path, /Datasets", 
           file = output.file, append = TRUE)
     
     # job name - "eg-3s-bbc1000"
-    job_name = paste("eg-", ds$Name, sep = "")
+    job_name = paste("g-", ds$Name, sep = "")
     
     # directory name
     # folder_name = paste("\"/scratch/", job_name, "\"", sep = "")
     # folder_name = paste("~/Global-Partitions/", job_name, sep = "")
-    folder_name = paste("/dev/shm/", job_name, sep = "")
-    # "/scratch/eg-3s-bbc1000
-    # folder_name = paste("/scratch/", job_name, sep = "")
+    # folder_name = paste("/dev/shm/", job_name, sep = "")
+    folder_name = paste("/scratch/", job_name, sep = "")
     
     # Absolute path to the folder where temporary processing will be done. 
     # You should use "scratch", "tmp" or "/dev/shm", it will depend on the 
     # cluster model where your experiment will be run.
-    str1 = paste("Temporary_Path, ", folder_name, sep="")
-    write(str1,file = output.file, append = TRUE)
+    str.0 = paste("Temporary_Path, ", folder_name, sep="")
+    write(str.0,file = output.file, append = TRUE)
     
     # "implementation, utiml"
-    str0 = paste("Implementation, ", pacote[w], sep="")
-    write(str0, file = output.file, append = TRUE)
+    str.1 = paste("Implementation, ", Implementation[w], sep="")
+    write(str.1, file = output.file, append = TRUE)
     
     # "dataset_name, 3s-bbc1000"
-    str3 = paste("dataset_name, ", ds$Name, sep="")
-    write(str3, file = output.file, append = TRUE)
+    str.2 = paste("Dataset_name, ", ds$Name, sep="")
+    write(str.2, file = output.file, append = TRUE)
     
     # Dataset number according to "datasets-original.csv" file
     # "number_dataset, 1"
-    str2 = paste("number_dataset, ", ds$Id, sep="")
-    write(str2, file = output.file, append = TRUE)
+    str.3 = paste("Number_dataset, ", ds$Id, sep="")
+    write(str.3, file = output.file, append = TRUE)
     
     # Number used for X-Fold Cross-Validation
-    write("number_folds, 10", file = output.file, append = TRUE)
+    write("Number_folds, 10", file = output.file, append = TRUE)
     
     # Number of cores to use for parallel processing
-    write("number_cores, 1", file = output.file, append = TRUE)
+    write("Number_cores, 10", file = output.file, append = TRUE)
     
     # finish writing to the configuration file
     close(output.file)

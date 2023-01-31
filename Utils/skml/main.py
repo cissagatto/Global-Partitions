@@ -1,10 +1,3 @@
-"""
-=================================
-Ensemble Classifier Chain Example
-=================================
-
-An example of :class:`skml.ensemble.EnsembleClassifierChain`
-"""
 import sys
 from sklearn.tree import DecisionTreeRegressor
 from skml.ensemble import EnsembleClassifierChain
@@ -41,12 +34,9 @@ if __name__ == '__main__':
     ensemble = EnsembleClassifierChain(baseModel)
     ensemble.fit(X_train.values, Y_train.values)
     
-    y_pred = pd.DataFrame(ensemble.predict(X_test.values))
-    y_true = pd.DataFrame(Y_test)
-    
-    #y_pred = y_pred.toarray()
-    #y_pred = pd.DataFrame(y_pred)
+    y_pred = pd.DataFrame(ensemble.predict(X_test.values)) 
     y_pred.columns = labels_y_test
+    y_true = pd.DataFrame(Y_test)
     
     true = (directory + "/y_true.csv")
     pred = (directory + "/y_pred.csv")
