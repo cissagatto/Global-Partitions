@@ -27,6 +27,9 @@ This code source is composed of the project R to be used in RStudio IDE and also
 12. config_files.R
 13. jobs.R
 
+_We used Random Forest for all global versions, except CLUS_
+_global-mulan and global-utiml are not implemented_
+
 
 ## Preparing your experiment
 

@@ -284,14 +284,15 @@ execute.global.mulan <- function(ds,
     
     str = paste(FolderSplit, "/predict-fold-", f, ".csv", sep="")
     
-    mulanst = paste(mulan, " -t ", train.file.name, " -T ", 
-                    test.file.name, " -x ", train.xml.name,
-                    ".xml -o out.csv -a ECC -c J48", sep = "")
+    # TROCAR POR RANDOM FOREST
+    # mulanst = paste(mulan, " -t ", train.file.name, " -T ", 
+    #                test.file.name, " -x ", train.xml.name,
+    #                ".xml -o out.csv -a ECC -c J48", sep = "")
     
     
     cat("\n\n\n")
     cat("=============================================")
-    print(mulanst)
+    # print(mulanst)
     cat("=============================================")
     cat("\n\n\n")
     

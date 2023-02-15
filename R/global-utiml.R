@@ -102,11 +102,10 @@ execute.global.utiml <- function(ds, dataset_name, number_folds,
       ds_test = mldr_from_dataframe(arquivo_ts, labelIndices = number)
       
       # aplicando modelo br
-      eccmodel = ecc(ds_train, "C5.0", seed=123, 
-                     cores=number_cores, attr.space=1.0)
+      
       
       # testando modelo br
-      predict <- predict(eccmodel, ds_test, cores= number_cores)
+      
       
       # Apply a threshold
       thresholds <- scut_threshold(predict, ds_test, cores = number_cores)
