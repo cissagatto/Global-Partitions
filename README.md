@@ -27,7 +27,9 @@ This code source is composed of the project R to be used in RStudio IDE and also
 12. config_files.R
 13. jobs.R
 
-_We used Random Forest for all global versions, except CLUS_
+_We used Random Forest for all global versions, except CLUS (which is a PCT)_
+
+
 _global-mulan and global-utiml are not implemented_
 
 
@@ -53,20 +55,20 @@ A file called _datasets-original.csv_ must be in the *root project folder*. This
 | Mean.IR      | optional  | **                                                    | 
 | Scumble      | optional  | **                                                    | 
 | TCS          | optional  | **                                                    | 
-| AttStart     | mandatory | Column number where the attribute space begins*       | 
+| AttStart     | mandatory | Column number where the attribute space begins * 1    | 
 | AttEnd       | mandatory | Column number where the attribute space ends          |
 | LabelStart   | mandatory | Column number where the label space begins            |
 | LabelEnd     | mandatory | Column number where the label space ends              |
-| Distinct     | optional  | **                                                    |
+| Distinct     | optional  | ** 2                                                  |
 | xn           | mandatory | Value for Dimension X of the Kohonen map              | 
 | yn           | mandatory | Value for Dimension Y of the Kohonen map              |
 | gridn        | mandatory | X times Y value. Kohonen's map must be square         |
 | max.neigbors | mandatory | The maximum number of neighbors is given by LABELS -1 |
 
 
-* Because it is the first column the number is always 1.
+1 - Because it is the first column the number is always 1.
 
-** [Click here](https://link.springer.com/book/10.1007/978-3-319-41111-8) to get explanation about each property.
+2 - [Click here](https://link.springer.com/book/10.1007/978-3-319-41111-8) to get explanation about each property.
 
 
 ## STEP 2
@@ -94,11 +96,11 @@ To run this code you will need a configuration file saved in *csv* format and wi
 |----------------|---------------------------------------------------------------------------| 
 | Dataset_Path   | Absolute path to the folder where the dataset's tar.gz is stored          |
 | Temporary_Path | Absolute path to the folder where temporary processing will be performed* |
-| implementation | Must be one of "clus", "mulan", "python" or "utiml"                       |
-| dataset_name   | Dataset name according to *dataset-original.csv* file                     |
-| number_dataset | Dataset number according to *dataset-original.csv* file                   |
-| number_folds   | Number of folds used in cross validation                                  |
-| number_cores   | Number of cores for parallel processing                                   |
+| Implementation | Must be one of "clus", "mulan", "python" or "utiml"                       |
+| Dataset_Name   | Dataset name according to *dataset-original.csv* file                     |
+| Number_Dataset | Dataset number according to *dataset-original.csv* file                   |
+| Number_Folds   | Number of folds used in cross validation                                  |
+| Number_Cores   | Number of cores for parallel processing                                   |
 
 * Use folders like *dev/shm*, *tmp* or *scratch* here.
 
@@ -132,7 +134,7 @@ Rscript global.R [absolute_path_to_config_file]
 Example:
 
 ```
-Rscript global.R "~/Global-Partitions/config-files/clus/g-GpositiveGO.csv"
+Rscript global.R "~/Global-Partitions/config-files/python/g-GpositiveGO.csv"
 ```
 
 ## RESULTS
@@ -144,9 +146,10 @@ The results are stored in a folder called REPORTS in the project root.
 
 ## Acknowledgment
 
-This study is financed in part by the Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - Brasil (CAPES) - Finance Code 001
+This study is financed in part by the Coordenação de Aperfeiçoamento de Pessoal de Nível Superior - Brasil (CAPES) - Finance Code 001.
 
 This study is financed in part by the Conselho Nacional de Desenvolvimento Científico e Tecnológico - Brasil (CNPQ) - Process number 200371/2022-3.
+
 
 ## Links
 
