@@ -53,6 +53,7 @@ if(dir.exists(FolderCF)==FALSE){dir.create(FolderCF)}
 # QUAL Implementation USAR
 ###############################################################################
 Implementation = c("utiml", "mulan", "python", "clus")
+Implementation.2 = c("u", "m", "p", "c")
 
 
 ###############################################################################
@@ -77,7 +78,8 @@ while(w<=length(Implementation)){
     
     # Confi File Name
     # "~/Global-Partitions/config-files/utiml/eg-3s-bbc1000.csv"
-    file_name = paste(FolderPa, "/g-", ds$Name, ".csv", sep="")
+    file_name = paste(FolderPa, "/g", Implementation.2[w], "-",
+                      ds$Name, ".csv", sep="")
     
     # Starts building the configuration file
     output.file <- file(file_name, "wb")
@@ -85,30 +87,12 @@ while(w<=length(Implementation)){
     # Config file table header
     write("Config, Value", file = output.file, append = TRUE)
     
-    # Absolute path to the folder where the dataset's "tar.gz" is stored
-    # write("Dataset_Path, \"/home/u704616/Datasets\"", 
-    #      file = output.file, append = TRUE)
-    
-    # write("Dataset_Path, ~/Global-Partitions/Datasets", 
-    #      file = output.file, append = TRUE)
-    
-    # write("Dataset_Path, /home/biomal/Datasets", 
-    #      file = output.file, append = TRUE)
-    
     write("Dataset_Path, /home/elaine/Datasets", 
           file = output.file, append = TRUE)
     
-    # write("Dataset_Path, /Datasets", 
-    #      file = output.file, append = TRUE)
+    job_name = paste("g", Implementation.2[w], "-", ds$Name, sep = "")
     
-    # job name - "eg-3s-bbc1000"
-    job_name = paste("g-", ds$Name, sep = "")
-    
-    # directory name
-    # folder_name = paste("\"/scratch/", job_name, "\"", sep = "")
-    # folder_name = paste("~/Global-Partitions/", job_name, sep = "")
     folder_name = paste("/dev/shm/", job_name, sep = "")
-    # folder_name = paste("/scratch/", job_name, sep = "")
     
     # Absolute path to the folder where temporary processing will be done. 
     # You should use "scratch", "tmp" or "/dev/shm", it will depend on the 
@@ -121,19 +105,19 @@ while(w<=length(Implementation)){
     write(str.1, file = output.file, append = TRUE)
     
     # "dataset_name, 3s-bbc1000"
-    str.2 = paste("Dataset_name, ", ds$Name, sep="")
+    str.2 = paste("Dataset_Name, ", ds$Name, sep="")
     write(str.2, file = output.file, append = TRUE)
     
     # Dataset number according to "datasets-original.csv" file
     # "number_dataset, 1"
-    str.3 = paste("Number_dataset, ", ds$Id, sep="")
+    str.3 = paste("Number_Dataset, ", ds$Id, sep="")
     write(str.3, file = output.file, append = TRUE)
     
     # Number used for X-Fold Cross-Validation
-    write("Number_folds, 10", file = output.file, append = TRUE)
+    write("Number_Folds, 10", file = output.file, append = TRUE)
     
     # Number of cores to use for parallel processing
-    write("Number_cores, 10", file = output.file, append = TRUE)
+    write("Number_Cores, 1", file = output.file, append = TRUE)
     
     # finish writing to the configuration file
     close(output.file)
