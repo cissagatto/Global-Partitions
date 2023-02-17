@@ -89,17 +89,17 @@ while(w<=length(Implementation)){
     # write("Dataset_Path, \"/home/u704616/Datasets\"", 
     #      file = output.file, append = TRUE)
     
-    # write("Dataset_Path, \"/home/elaine/Datasets\"", 
-    #      file = output.file, append = TRUE)
-    
     # write("Dataset_Path, ~/Global-Partitions/Datasets", 
     #      file = output.file, append = TRUE)
     
     # write("Dataset_Path, /home/biomal/Datasets", 
     #      file = output.file, append = TRUE)
     
-    write("Dataset_Path, /Datasets", 
+    write("Dataset_Path, /home/elaine/Datasets", 
           file = output.file, append = TRUE)
+    
+    # write("Dataset_Path, /Datasets", 
+    #      file = output.file, append = TRUE)
     
     # job name - "eg-3s-bbc1000"
     job_name = paste("g-", ds$Name, sep = "")
@@ -107,8 +107,8 @@ while(w<=length(Implementation)){
     # directory name
     # folder_name = paste("\"/scratch/", job_name, "\"", sep = "")
     # folder_name = paste("~/Global-Partitions/", job_name, sep = "")
-    # folder_name = paste("/dev/shm/", job_name, sep = "")
-    folder_name = paste("/scratch/", job_name, sep = "")
+    folder_name = paste("/dev/shm/", job_name, sep = "")
+    # folder_name = paste("/scratch/", job_name, sep = "")
     
     # Absolute path to the folder where temporary processing will be done. 
     # You should use "scratch", "tmp" or "/dev/shm", it will depend on the 
