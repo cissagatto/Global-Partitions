@@ -3,10 +3,8 @@ from sklearn.ensemble import RandomForestClassifier
 import numpy as np
 import pandas as pd
 
-if __name__ == '__main__':
+if __name__ == '__main__':   
     
-    random_state = 0
-    n_estimators = 200
    
     train = pd.read_csv(sys.argv[1])
     valid = pd.read_csv(sys.argv[2])
@@ -35,6 +33,8 @@ if __name__ == '__main__':
     attr_x_train = list(X_train.columns)
     attr_x_test = list(X_test.columns)
     
+    random_state = 0
+    n_estimators = 200
     rf = RandomForestClassifier(n_estimators = n_estimators, random_state = random_state)
     rf.fit(X_train, Y_train)
     
