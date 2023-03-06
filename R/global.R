@@ -1,6 +1,6 @@
-cat("\n\n################################################################")
-  cat("\n# RSCRIPT: START EXECUTE GLOBAL ECC                              #")
-  cat("\n##################################################################\n\n")
+cat("\n\n###############################################################")
+cat("\n# RSCRIPT: START EXECUTE GLOBAL PARTITIONS                    #")
+cat("\n###############################################################\n\n")
 
 
 # clean
@@ -20,7 +20,7 @@ rm(list=ls())
 # Public License for more details.                                           #
 #                                                                            #
 # Elaine Cecilia Gatto | Prof. Dr. Ricardo Cerri | Prof. Dr. Mauri           #
-# Ferrandin | Prof. Dr. Celine Vens | Dr. Felipe Nakano Kenji                #
+# Ferrandin | Prof. Dr. Celine Vens | PhD Felipe Nakano Kenji                #
 #                                                                            #
 # Federal University of São Carlos - UFSCar - https://www2.ufscar.br         #
 # Campus São Carlos - Computer Department - DC - https://site.dc.ufscar.br   #
@@ -61,6 +61,8 @@ options(show.error.messages = TRUE)   # ERROR MESSAGES
 options(scipen=20)                    # number of places after the comma
 
 
+parameters = list()
+
 
 cat("\n########################################")
 cat("\n# Reading Datasets-Original.csv        #")
@@ -68,18 +70,21 @@ cat("\n########################################\n\n")
 setwd(FolderRoot)
 datasets <- data.frame(read.csv("datasets-original.csv"))
 
+parameters$Datasets.List = datasets
+
 
 cat("\n#####################################")
 cat("\n# GET ARGUMENTS FROM COMMAND LINE   #")
 cat("\n#####################################\n\n")
 args <- commandArgs(TRUE)
 
-# config_file = "/home/biomal/Global-Partitions/config-files/clus/eg-GpositiveGO.csv"
-# config_file = "/home/biomal/Global-Partitions/config-files/python/g-GpositiveGO.csv"
-# config_file = "/home/biomal/Global-Partitions/config-files/mulan/g-GpositiveGO.csv"
-# config_file = "/home/biomal/Global-Partitions/config-files/python/g-GpositiveGO.csv"
+
+
+# config_file = "/home/biomal/Global-Partitions/config-files/rf/grf-GpositiveGO.csv"
+
 
 config_file <- args[1]
+parameters$Config.File = config_file
 
 
 if(file.exists(config_file)==FALSE){
@@ -103,37 +108,36 @@ cat("\n########################################\n\n")
 
 dataset_path = toString(config$Value[1])
 dataset_path = str_remove(dataset_path, pattern = " ")
+parameters$Dataset.Path = dataset_path
 
 folderResults = toString(config$Value[2]) 
 folderResults = str_remove(folderResults, pattern = " ")
+parameters$Folder.Results = folderResults
 
 implementation = toString(config$Value[3])
 implementation = str_remove(implementation, pattern = " ")
+parameters$Implementation = implementation
 
 dataset_name = toString(config$Value[4])
 dataset_name = str_remove(dataset_name, pattern = " ")
+parameters$Dataset.Name = dataset_name
 
 number_dataset = as.numeric(config$Value[5])
+parameters$Number.Dataset = number_dataset
+
 number_folds = as.numeric(config$Value[6])
+parameters$Number.Folds = number_folds
+
 number_cores = as.numeric(config$Value[7])
+parameters$Number.Cores = number_cores
 
 ds = datasets[number_dataset,]
+parameters$Dataset.Info = ds
 
 
 cat("\n################################################################\n")
 print(ds)
 cat("\n################################################################\n\n")
-
-
-# cat("\n################################################################\n")
-# cat("\n# DATASET PATH: \t", dataset_path)
-# cat("\n# TEMPORARY PATH: \t", folderResults)
-# cat("\n# IMPLEMENATION:  \t", implementation)
-# cat("\n# DATASET NAME:  \t", dataset_name)
-# cat("\n# NUMBER DATASET: \t", number_dataset)
-# cat("\n# NUMBER X-FOLDS CROSS-VALIDATION: \t", number_folds)
-# cat("\n# NUMBER CORES: \t", number_cores)
-# cat("\n################################################################\n\n")
 
 
 cat("\n########################################")
@@ -146,8 +150,7 @@ cat("\n###############################\n")
 cat("\n# Get directories             #")
 cat("\n###############################\n\n")
 diretorios <- directories(dataset_name, folderResults)
-# print(diretorios)
-# cat("\n\n")
+parameters$Directories = diretorios
 
 
 
@@ -211,8 +214,8 @@ if(implementation=="utiml"){
   source("run-utiml.R")
   
   cat("\n\n############################################################")
-    cat("\n# RSCRIPT GLOBAL START                                     #")
-    cat("\n############################################################\n\n")
+  cat("\n# RSCRIPT GLOBAL START                                     #")
+  cat("\n############################################################\n\n")
   timeFinal <- system.time(results <- run.ecc.utiml(ds, 
                                                     dataset_name,
                                                     number_dataset, 
@@ -221,8 +224,8 @@ if(implementation=="utiml"){
                                                     folderResults))  
   
   cat("\n\n#####################################################")
-    cat("\n# RSCRIPT SAVE RUNTIME                              #")
-    cat("\n#####################################################\n\n")
+  cat("\n# RSCRIPT SAVE RUNTIME                              #")
+  cat("\n#####################################################\n\n")
   result_set <- t(data.matrix(timeFinal))
   setwd(diretorios$folderGlobal)
   write.csv(result_set, "Runtime-Final.csv")
@@ -232,16 +235,16 @@ if(implementation=="utiml"){
   
   
   cat("\n\n#####################################################")
-    cat("\n# RSCRIPT DELETE                                   #")
-    cat("\n####################################################\n\n")
+  cat("\n# RSCRIPT DELETE                                   #")
+  cat("\n####################################################\n\n")
   str5 = paste("rm -r ", diretorios$folderDataset, sep="")
   print(system(str5))
   
   
   
   cat("\n\n######################################################")
-    cat("\n# RSCRIPT COPY TO GOOGLE DRIVE                       #")
-    cat("\n######################################################\n\n")
+  cat("\n# RSCRIPT COPY TO GOOGLE DRIVE                       #")
+  cat("\n######################################################\n\n")
   origem = diretorios$folderGlobal
   destino = paste("nuvem:Global/Utiml/", dataset_name, sep="")
   comando = paste("rclone -P copy ", origem, " ", destino, sep="")
@@ -254,45 +257,61 @@ if(implementation=="utiml"){
   }
   
   
-} else if(implementation=="python"){
+} else if(implementation=="rf"){
   
   setwd(FolderScripts)
-  source("run-python.R")
+  source("run-rf.R")
   
   cat("\n\n############################################################")
-    cat("\n# RSCRIPT GLOBAL START                                     #")
-    cat("\n############################################################\n\n")
-  timeFinal <- system.time(results <- run.ecc.python(ds, 
-                                                    dataset_name,
-                                                    number_dataset, 
-                                                    number_cores, 
-                                                    number_folds, 
-                                                    folderResults))  
+  cat("\n# RSCRIPT GLOBAL START                                     #")
+  cat("\n############################################################\n\n")
+  timeFinal <- system.time(results <- run.rf(parameters, 
+                                             ds, 
+                                             dataset_name,
+                                             number_dataset, 
+                                             number_cores, 
+                                             number_folds, 
+                                             folderResults))  
   
   
   cat("\n\n#####################################################")
-    cat("\n# RSCRIPT SAVE RUNTIME                              #")
-    cat("\n#####################################################\n\n")
+  cat("\n# RSCRIPT SAVE RUNTIME                              #")
+  cat("\n#####################################################\n\n")
   result_set <- t(data.matrix(timeFinal))
   setwd(diretorios$folderGlobal)
-  write.csv(result_set, "Runtime-Final.csv")
+  write.csv(result_set, "Runtime-Final.csv", row.names = FALSE)
   x.minutos = (1 * as.numeric(result_set[3]))/60
   setwd(diretorios$folderGlobal)
-  write(x.minutos, "minutos.txt")
+  write(x.minutos, "minute.txt")
   
   
-  cat("\n\n###################################################")
-    cat("\n# RSCRIPT DELETE                                  #")
-    cat("\n###################################################\n\n")
-  str5 = paste("rm -r ", diretorios$folderDataset, sep="")
-  print(system(str5))
+  # cat("\n\n###################################################")
+  # cat("\n# RSCRIPT DELETE                                  #")
+  # cat("\n###################################################\n\n")
+  # str5 = paste("rm -r ", diretorios$folderDataset, sep="")
+  # print(system(str5))
   
   
   cat("\n\n######################################################")
-    cat("\n# RSCRIPT COPY TO GOOGLE DRIVE                       #")
-    cat("\n######################################################\n\n")
+  cat("\n# RSCRIPT COPY TO GOOGLE DRIVE                       #")
+  cat("\n######################################################\n\n")
   origem = diretorios$folderGlobal
-  destino = paste("nuvem:Global/Python/", dataset_name, sep="")
+  destino = paste("nuvem:Global/RandomForests/", dataset_name, sep="")
+  comando = paste("rclone -P copy ", origem, " ", destino, sep="")
+  cat("\n", comando, "\n") 
+  a = print(system(comando))
+  a = as.numeric(a)
+  if(a != 0) {
+    stop("Erro RCLONE")
+    quit("yes")
+  }
+  
+  
+  cat("\n\n######################################################")
+  cat("\n# RSCRIPT COPY TO GOOGLE DRIVE                       #")
+  cat("\n######################################################\n\n")
+  origem = diretorios$folderDataset
+  destino = paste("nuvem:Datasets/", dataset_name, sep="")
   comando = paste("rclone -P copy ", origem, " ", destino, sep="")
   cat("\n", comando, "\n") 
   a = print(system(comando))
@@ -340,8 +359,8 @@ if(implementation=="utiml"){
   
   
   cat("\n\n######################################################")
-    cat("\n# RSCRIPT COPY TO GOOGLE DRIVE                       #")
-    cat("\n######################################################\n\n")
+  cat("\n# RSCRIPT COPY TO GOOGLE DRIVE                       #")
+  cat("\n######################################################\n\n")
   origem = diretorios$folderGlobal
   destino = paste("nuvem:Global/Mulan/", dataset_name, sep="")
   comando = paste("rclone -P copy ", origem, " ", destino, sep="")
@@ -361,8 +380,8 @@ if(implementation=="utiml"){
   source("run-clus.R")
   
   cat("\n\n############################################################")
-    cat("\n# RSCRIPT GLOBAL START                                     #")
-    cat("\n############################################################\n\n")
+  cat("\n# RSCRIPT GLOBAL START                                     #")
+  cat("\n############################################################\n\n")
   timeFinal <- system.time(results <- run.clus(ds, 
                                                dataset_name,
                                                number_dataset, 
@@ -372,8 +391,8 @@ if(implementation=="utiml"){
   
   
   cat("\n\n#####################################################")
-    cat("\n# RSCRIPT SAVE RUNTIME                              #")
-    cat("\n#####################################################\n\n")
+  cat("\n# RSCRIPT SAVE RUNTIME                              #")
+  cat("\n#####################################################\n\n")
   result_set <- t(data.matrix(timeFinal))
   setwd(diretorios$folderGlobal)
   write.csv(result_set, "Runtime-Final.csv")
@@ -383,26 +402,26 @@ if(implementation=="utiml"){
   
   
   cat("\n\n####################################################")
-    cat("\n# RSCRIPT DELETE                                   #")
-    cat("\n####################################################\n\n")
+  cat("\n# RSCRIPT DELETE                                   #")
+  cat("\n####################################################\n\n")
   str5 = paste("rm -r ", diretorios$folderDataset, sep="")
   print(system(str5))
   
   
   
   cat("\n\n######################################################")
-    cat("\n# RSCRIPT COPY TO GOOGLE DRIVE                       #")
-    cat("\n######################################################\n\n")
-    origem = diretorios$folderGlobal
-    destino = paste("nuvem:Global/Clus/", dataset_name, sep="")
-    comando = paste("rclone -P copy ", origem, " ", destino, sep="")
-    cat("\n", comando, "\n") 
-    a = print(system(comando))
-    a = as.numeric(a)
-    if(a != 0) {
-      stop("Erro RCLONE")
-      quit("yes")
-    }
+  cat("\n# RSCRIPT COPY TO GOOGLE DRIVE                       #")
+  cat("\n######################################################\n\n")
+  origem = diretorios$folderGlobal
+  destino = paste("nuvem:Global/Clus/", dataset_name, sep="")
+  comando = paste("rclone -P copy ", origem, " ", destino, sep="")
+  cat("\n", comando, "\n") 
+  a = print(system(comando))
+  a = as.numeric(a)
+  if(a != 0) {
+    stop("Erro RCLONE")
+    quit("yes")
+  }
   
   
 }
@@ -430,16 +449,16 @@ if(implementation=="utiml"){
 
 
 cat("\n\n#######################################################")
-  cat("\n# CLEAN                                               #")
-  cat("\n#######################################################\n\n")
+cat("\n# CLEAN                                               #")
+cat("\n#######################################################\n\n")
 cat("\nDelete folder \n")
 str5 = paste("rm -r ", folderResults, sep="")
 print(system(str5))
 
 
 cat("\n\n################################################################")
-  cat("\n# RSCRIPT SUCCESSFULLY FINISHED                                #")
-  cat("\n################################################################\n\n")
+cat("\n# RSCRIPT SUCCESSFULLY FINISHED                                #")
+cat("\n################################################################\n\n")
 
 
 rm(list = ls())

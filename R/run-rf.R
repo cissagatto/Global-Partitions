@@ -11,7 +11,7 @@
 # Public License for more details.                                           #
 #                                                                            #
 # Elaine Cecilia Gatto | Prof. Dr. Ricardo Cerri | Prof. Dr. Mauri           #
-# Ferrandin | Prof. Dr. Celine Vens | Dr. Felipe Nakano Kenji                #
+# Ferrandin | Prof. Dr. Celine Vens | PhD Felipe Nakano Kenji                #
 #                                                                            #
 # Federal University of São Carlos - UFSCar - https://www2.ufscar.br         #
 # Campus São Carlos - Computer Department - DC - https://site.dc.ufscar.br   #
@@ -25,13 +25,11 @@
 #                                                                            #
 ##############################################################################
 
-
-
 ###############################################################################
 # SET WORKSAPCE                                                               #
 ###############################################################################
 FolderRoot = "~/Global-Partitions"
-FolderScripts = paste(FolderRoot, "/R", sep="")
+FolderScripts = "~/Global-Partitions/R"
 
 
 
@@ -42,19 +40,20 @@ FolderScripts = paste(FolderRoot, "/R", sep="")
 # number_folds: number of folds for cross validation                                             # 
 # delete: if you want, or not, to delete all folders and files generated                         #
 ######################################################################
-run.ecc.python <- function(ds, 
-                           dataset_name,
-                           number_dataset, 
-                           number_cores, 
-                           number_folds, 
-                           folderResults){
+run.rf <- function(parameters, 
+                   ds, 
+                   dataset_name,
+                   number_dataset, 
+                   number_cores, 
+                   number_folds, 
+                   folderResults){
   
   setwd(FolderScripts)
-  source("global-python.R")
+  source("global-rf.R")
   
   diretorios = directories(dataset_name, folderResults)
   
-  if(number_cores == 0){
+  if(parameters$Number.Cores == 0){
     
     cat("\n\n##########################################################")
     cat("\n# Zero is a disallowed value for number_cores. Please      #")
@@ -63,17 +62,17 @@ run.ecc.python <- function(ds,
     
   } else {
     
-    cl <- parallel::makeCluster(number_cores)
+    cl <- parallel::makeCluster(parameters$Number.Cores)
     doParallel::registerDoParallel(cl)
     print(cl)
     
-    if(number_cores==1){
+    if(parameters$Number.Cores==1){
       cat("\n\n########################################################")
       cat("\n# Running Sequentially!                                #")
       cat("\n########################################################\n\n")
     } else {
       cat("\n\n############################################################")
-      cat("\n# Running in parallel with ", number_cores, " cores!       #")
+      cat("\n# Running in parallel with ", parameters$Number.Cores, " cores!       #")
       cat("\n############################################################\n\n")
     }
   }
@@ -82,9 +81,9 @@ run.ecc.python <- function(ds,
   retorno = list()
   
   
-  cat("\n\n######################################################")
-  cat("\n# RUN: Gather Files                                  #")
-  cat("\n######################################################\n\n")
+  cat("\n\n####################################################")
+    cat("\n# RUN: Gather Files                                #")
+    cat("\n####################################################\n\n")
   time.gather.files = system.time(gather.files.python(ds, 
                                                       dataset_name,
                                                       number_dataset, 
@@ -94,19 +93,27 @@ run.ecc.python <- function(ds,
   
   
   
-  cat("\n\n############################################################")
-  cat("\n# RUN: Execute ECC GLOBAL                            #")
-  cat("\n############################################################\n\n")
-  time.execute = system.time(execute.global.python(ds, 
+  cat("\n\n#################################################")
+    cat("\n# RUN: Properties                               #")
+    cat("\n#################################################\n\n")
+  time.properties = system.time(properties.datasets(parameters))
+  
+  
+  
+  cat("\n\n####################################################")
+    cat("\n# RUN: Execute Random Forests                      #")
+    cat("\n####################################################\n\n")
+  time.execute = system.time(execute.global.python(parameters,
+                                                   ds, 
                                                    dataset_name, 
                                                    number_folds,
                                                    number_cores, 
                                                    folderResults))
   
   
-  cat("\n\n############################################################")
-  cat("\n# RUN: Evaluate                                              #")
-  cat("\n##############################################################\n\n")
+  cat("\n\n##########################################################")
+  cat("\n# RUN: Evaluate                                          #")
+  cat("\n##########################################################\n\n")
   time.evaluate = system.time(evaluate.global.python(ds, 
                                                      dataset_name, 
                                                      number_folds,
@@ -114,9 +121,9 @@ run.ecc.python <- function(ds,
                                                      folderResults))
   
   
-  cat("\n\n############################################################")
-  cat("\n# RUN: Gather Evaluated Measures                             #")
-  cat("\n##############################################################\n\n")
+  cat("\n\n##########################################################")
+    cat("\n# RUN: Gather Evaluated Measures                         #")
+    cat("\n##########################################################\n\n")
   time.gather.evaluate = system.time(gather.eval.global.python(ds, 
                                                                dataset_name, 
                                                                number_folds,
@@ -124,18 +131,19 @@ run.ecc.python <- function(ds,
                                                                folderResults))
   
   
-  cat("\n\n############################################################")
-  cat("\n# RUN: Save Runtime                                          #")
-  cat("\n##############################################################\n\n")
-  RunTimeGlobal = rbind(time.gather.files, time.execute, 
-                        time.evaluate, time.gather.evaluate)
+  cat("\n\n###########################################################")
+    cat("\n# RUN: Save Runtime                                       #")
+    cat("\n###########################################################\n\n")
+  RunTimeGlobal = rbind(time.gather.files, time.properties,
+                        time.execute, time.evaluate, 
+                        time.gather.evaluate)
   setwd(diretorios$folderGlobal)
-  write.csv(RunTimeGlobal, paste(dataset_name, "-RunTime-Python.csv", sep=""))
+  write.csv(RunTimeGlobal, paste(dataset_name, "-Run-RunTime-RF.csv", sep=""))
   
   
-  cat("\n\n############################################################")
-  cat("\n# RUN: Stop Parallel                                         #")
-  cat("\n##############################################################\n\n")
+  cat("\n\n###########################################################")
+    cat("\n# RUN: Stop Parallel                                      #")
+    cat("\n###########################################################\n\n")
   parallel::stopCluster(cl) 	
   
 }

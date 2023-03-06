@@ -1,7 +1,35 @@
+##############################################################################
+# GLOBAL PARTITIONS                                                          #
+# Copyright (C) 2023                                                         #
+#                                                                            #
+# This code is free software: you can redistribute it and/or modify it under #
+# the terms of the GNU General Public License as published by the Free       #
+# Software Foundation, either version 3 of the License, or (at your option)  #
+# any later version. This code is distributed in the hope that it will be    #
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of     #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General   #
+# Public License for more details.                                           #
+#                                                                            #
+# Elaine Cecilia Gatto | Prof. Dr. Ricardo Cerri | Prof. Dr. Mauri           #
+# Ferrandin | Prof. Dr. Celine Vens | PhD Felipe Nakano Kenji                #
+#                                                                            #
+# Federal University of São Carlos - UFSCar - https://www2.ufscar.br         #
+# Campus São Carlos - Computer Department - DC - https://site.dc.ufscar.br   #
+# Post Graduate Program in Computer Science - PPGCC                          # 
+# http://ppgcc.dc.ufscar.br - Bioinformatics and Machine Learning Group      #
+# BIOMAL - http://www.biomal.ufscar.br                                       #
+#                                                                            #
+# Katholieke Universiteit Leuven Campus Kulak Kortrijk Belgium               #
+# Medicine Department - https://kulak.kuleuven.be/                           #
+# https://kulak.kuleuven.be/nl/over_kulak/faculteiten/geneeskunde            #
+#                                                                            #
+##############################################################################
+
+
 import sys
-from sklearn.ensemble import RandomForestClassifier
 import numpy as np
 import pandas as pd
+from sklearn.ensemble import RandomForestClassifier  
 
 if __name__ == '__main__':   
     
@@ -11,40 +39,76 @@ if __name__ == '__main__':
     test = pd.read_csv(sys.argv[3])
     start = int(sys.argv[4])
     directory = sys.argv[5]
-    
-    # train = pd.read_csv("/dev/shm/eg-GpositiveGO/Global/Split-1/GpositiveGO-Split-Tr-1.csv")
-    # test = pd.read_csv("/dev/shm/eg-GpositiveGO/Global/Split-1/GpositiveGO-Split-Ts-1.csv")
-    # validation = pd.read_csv("/dev/shm/eg-GpositiveGO/Global/Split-1/GpositiveGO-Split-Vl-1.csv")
-    # start = 912
-    # directory = "/dev/shm/eg-GpositiveGO/Global/Split-1"
-    
+     
+    # juntando treino com validação
     train = pd.concat([train,valid],axis=0).reset_index(drop=True)
     
-    # TREINO
-    X_train = train.iloc[:, :start] # atributos 
-    Y_train = train.iloc[:, start:] # rótulos 
+    # treino: separando os atributos e os rótulos
+    X_train_att = train.iloc[:, :start] # atributos 
+    Y_train_labels = train.iloc[:, start:] # rótulos 
     
-    # TESTE
-    X_test = test.iloc[:, :start] # atributos
-    Y_test = test.iloc[:, start:] # rótulos verdadeiros
+    # teste: separando os atributos e os rótulos
+    X_test_att = test.iloc[:, :start] # atributos
+    Y_test_labels  = test.iloc[:, start:] # rótulos verdadeiros
     
-    labels_y_train = list(Y_train.columns)
-    labels_y_test = list(Y_test.columns)
-    attr_x_train = list(X_train.columns)
-    attr_x_test = list(X_test.columns)
+    # obtendo os nomes dos rótulos
+    labels_y_train = list(Y_train_labels.columns)
+    labels_y_test = list(Y_test_labels.columns)
     
-    random_state = 0
+    # obtendo os nomes dos atributos
+    attr_x_train = list(X_train_att.columns)
+    attr_x_test = list(X_test_att.columns)
+    
+    # parametros do classificador base
+    random_state = 0    
     n_estimators = 200
+
+    # inicializa o classificador base
     rf = RandomForestClassifier(n_estimators = n_estimators, random_state = random_state)
-    rf.fit(X_train, Y_train)
     
-    y_pred = pd.DataFrame(rf.predict(X_test)) 
-    y_pred.columns = labels_y_test
-    y_true = pd.DataFrame(Y_test)
+    # treino
+    rf.fit(X_train_att, Y_train_labels)
     
+    # teste
+    y_pred_a = rf.predict(X_test_att)
+    y_pred_d = pd.DataFrame(rf.predict(X_test_att)) 
+    probabilities = rf.predict_proba(X_test_att)
+    len(probabilities)
+    
+    # renomeando as colunas
+    y_pred_d.columns = labels_y_test
+    
+    # obtendo os rótulos verdadeiros
+    y_true_a = np.array(Y_test_labels)
+    y_true_d = pd.DataFrame(Y_test_labels)
+    
+    # setando nome do diretorio e arquivo para salvar
     true = (directory + "/y_true.csv")
     pred = (directory + "/y_pred.csv")
+    probaname1 = (directory + "/y_proba.csv")
+    probaname2 = (directory + "/y_proba_1.csv")
     
-    y_pred.to_csv(pred, index=False)
-    y_true.to_csv(true, index=False)
+    # salvando true labels and predict labels
+    y_pred_d.to_csv(pred, index=False)
+    y_true_d.to_csv(true, index=False)
+    
+    ldf = []
+    ldf2 = []
+    for n in range(0, len(probabilities)):
+      # print(" ", n)
+      res = probabilities[n]
+      res = pd.DataFrame(res)
+      res.columns = [f'prob_{n+1}',f'prob_{n+1}']
+      ldf.append(res)
+      res2 = res.iloc[:, :1] # atributos
+      ldf2.append(res2)
+    
+    
+    print(" ")
+    final = pd.concat(ldf, axis=1)
+    final.to_csv(probaname1, index=False)
+    
+    final2 = pd.concat(ldf2, axis=1)
+    final2.to_csv(probaname2, index=False)
+    
 
