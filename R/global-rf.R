@@ -193,7 +193,7 @@ execute.global.python <- function(parameters,
     ##################################################################
     # EXECUTE ECC PYTHON
     str.execute = paste("python3 ", diretorios$folderUtils,
-                        "/main.py ", 
+                        "/random-forests.py ", 
                         train.file.name, " ",
                         val.file.name,  " ",
                         test.file.name, " ", 
@@ -235,7 +235,6 @@ execute.global.python <- function(parameters,
     all.predictions = cbind(y_preds, y_trues, y_proba)
     setwd(FolderSplit)
     write.csv(all.predictions, "folder-predictions.csv", row.names = FALSE)
-    
     
     
     #####################################################################
@@ -282,7 +281,9 @@ execute.global.python <- function(parameters,
     name = paste(FolderSplit, "/plot-roc-", f, ".pdf", sep="")
     pdf(name, width = 10, height = 8)
     print(plot(res$roc, print.thres = 'all', print.auc=TRUE, 
-               print.thres.cex=0.7, identity=TRUE))
+               print.thres.cex=0.7, grid = TRUE, identity=TRUE,
+               axes = TRUE, legacy.axes = TRUE, 
+               identity.col = "#a91e0e", col = "#1161d5"))
     dev.off()
     cat("\n")
     
@@ -575,9 +576,9 @@ evaluate.global.python <- function(ds,
   }
   
   gc()
-  cat("\n##################################################################################################")
-  cat("\n# END OF THE EVALUATION MISCELLANEOUS FUNCTION                                                   #")
-  cat("\n##################################################################################################")
+  cat("\n####################################################################")
+  cat("\n# GLOBAL RF: END OF THE EVALUATION MISCELLANEOUS FUNCTION          #")
+  cat("\n####################################################################")
   cat("\n\n\n\n")
 }
 
@@ -674,9 +675,9 @@ gather.eval.global.python <- function(ds,
   
   
   gc()
-  cat("\n##################################################################################################")
-  cat("\n# PYTHON GLOBAL: END OF THE FUNCTION GATHER EVALUATED                                              #") 
-  cat("\n##################################################################################################")
+  cat("\n#############################################################")
+  cat("\n# RF GLOBAL: END OF THE FUNCTION GATHER EVALUATED           #") 
+  cat("\n#############################################################")
   cat("\n\n\n\n")
 }
 
