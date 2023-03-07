@@ -546,8 +546,6 @@ evaluate.global.python <- function(ds,
                           confmat$FNl, confmat$TNl)
     names(conf.mat) = c("TP", "FP", "FN", "TN")
     
-    total.col = apply(conf.mat, 2, sum)
-    total.row = apply(conf.mat, 1, sum)
     
     # porcentagem
     conf.mat.perc = data.frame(conf.mat/nrow(y_true))
@@ -565,8 +563,8 @@ evaluate.global.python <- function(ds,
     # calculando a porcentagem de rótulos classificados corretamente
     correct.perc = correct/nrow(y_true)
     
-    conf.mat = data.frame(conf.mat, conf.mat.perc, total.col,
-                          wrong, correct, wrong.perc, correct.perc)
+    conf.mat = data.frame(conf.mat, conf.mat.perc, wrong, correct, 
+                          wrong.perc, correct.perc)
     
     setwd(FolderSplit)
     write.csv(conf.mat, "matrix-confusion.csv")

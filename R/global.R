@@ -80,13 +80,13 @@ args <- commandArgs(TRUE)
 
 
 
-# config_file = "/home/biomal/Global-Partitions/config-files/rf/grf-GpositiveGO.csv"
+# config_file = "/home/biomal/Global-Partitions/config-files/rf/grf-emotions.csv"
 
 
 config_file <- args[1]
+
+
 parameters$Config.File = config_file
-
-
 if(file.exists(config_file)==FALSE){
   cat("\n################################################################")
   cat("#\n Missing Config File! Verify the following path:              #")
