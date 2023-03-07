@@ -1,5 +1,5 @@
 # Global Partitions
-This code is part of my PhD research at PPG-CC/DC/UFSCar in colaboration with Katholieke Universiteit Leuven Campus Kulak Kortrijk Belgium. The aim is build and test global partitions for multilabel classification.
+This code is part of my PhD research at PPG-CC-DC-UFSCar in colaboration with Katholieke Universiteit Leuven Campus Kulak Kortrijk Belgium. The aim is build and test global partitions for multilabel classification.
 
 
 ## How to cite 
@@ -18,13 +18,13 @@ This code source is composed of the project R to be used in RStudio IDE and also
 03. global-clus.R
 04. global-mulan.R
 05. global-utiml.R
-06. global-python.R
+06. global-rf.R
 07. run-clus.R
 08. run-mulan.R
 09. run-utiml.R
-10. run-python.R
+10. run-rf.R
 11. global.R
-12. config_files.R
+12. config-files.R
 13. jobs.R
 
 _We used Random Forest for all global versions, except CLUS (which is a PCT)_
@@ -96,7 +96,7 @@ To run this code you will need a configuration file saved in *csv* format and wi
 |----------------|---------------------------------------------------------------------------| 
 | Dataset_Path   | Absolute path to the folder where the dataset's tar.gz is stored          |
 | Temporary_Path | Absolute path to the folder where temporary processing will be performed* |
-| Implementation | Must be one of "clus", "mulan", "python" or "utiml"                       |
+| Implementation | Must be one of "clus", "mulan", "rf" or "utiml"                           |
 | Dataset_Name   | Dataset name according to *dataset-original.csv* file                     |
 | Number_Dataset | Dataset number according to *dataset-original.csv* file                   |
 | Number_Folds   | Number of folds used in cross validation                                  |
@@ -134,15 +134,14 @@ Rscript global.R [absolute_path_to_config_file]
 Example:
 
 ```
-Rscript global.R "~/Global-Partitions/config-files/python/g-GpositiveGO.csv"
+Rscript global.R "~/Global-Partitions/config-files/rf/grf-GpositiveGO.csv"
 ```
 
 ## RESULTS
-The results are stored in a folder called REPORTS in the project root.
+The results are stored in a folder called OUTPUT in the project root.
 
 ## DOWNLOAD RESULTS
-
-| [Clus](https://1drv.ms/u/s!Aq6SGcf6js1mrY08rN0JOc8N1MobGQ?e=QgtSa8) | [Ecc Mulan](https://1drv.ms/u/s!Aq6SGcf6js1msssPA1B_4_coQXhJww?e=F64WfJ) | [Ecc Python](https://1drv.ms/u/s!Aq6SGcf6js1mw4kQGe9dsDdEWGHQ9Q?e=8rXssI) | [Ecc Utiml](https://1drv.ms/u/s!Aq6SGcf6js1msssQykOlMA1FKm3GBw?e=yC26i6)
+Soon
 
 ## Acknowledgment
 
