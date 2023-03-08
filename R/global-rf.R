@@ -180,13 +180,19 @@ execute.global.python <- function(parameters,
     train = data.frame(read.csv(train.file.name))
     test = data.frame(read.csv(test.file.name))
     val = data.frame(read.csv(val.file.name))
-    train = rbind(train, val)
+    tv = rbind(train, val)
+    
     
     ##########################################################################
     labels.indices = seq(parameters$Dataset.Info$LabelStart, parameters$Dataset.Info$LabelEnd, by=1)
+    
+    
+    ##########################################################################
     mldr.treino = mldr_from_dataframe(train, labelIndices = labels.indices)
     mldr.teste = mldr_from_dataframe(test, labelIndices = labels.indices)
     
+    
+    ##########################################################################
     names.rotulos = colnames(train[,parameters$Dataset.Info$LabelStart:parameters$Dataset.Info$LabelEnd])
     
     

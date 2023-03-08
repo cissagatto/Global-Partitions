@@ -30,6 +30,7 @@ import sys
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier  
+from sklearn.metrics import average_precision_score
 
 if __name__ == '__main__':   
     
@@ -116,5 +117,16 @@ if __name__ == '__main__':
     
     final2 = pd.concat(ldf2, axis=1)
     final2.to_csv(probaname2, index=False)
+
+    y_true = pd.read_csv(true)
+    y_pred = pd.read_csv(pred)
+      
+    micro = average_precision_score(y_true, y_pred, average = "micro")
+    macro = average_precision_score(y_true, y_pred, average = "macro")
+      
+    y_proba = pd.DataFrame([micro,macro]).T
+    y_proba.columns = ["Micro-AUPRC", "Macro-AUPRC"]
+    name = (directory + "/y_proba_mami.csv")
+    y_proba.to_csv(name, index=False)
     
 

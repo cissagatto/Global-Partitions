@@ -79,8 +79,7 @@ cat("\n#####################################\n\n")
 args <- commandArgs(TRUE)
 
 
-
-# config_file = "/home/biomal/Global-Partitions/config-files/rf/grf-emotions.csv"
+# config_file = "/home/biomal/Global-Partitions/config-files/rf/grf-GpositiveGO.csv"
 
 
 config_file <- args[1]
