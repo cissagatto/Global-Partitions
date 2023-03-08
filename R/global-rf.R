@@ -295,6 +295,13 @@ execute.global.python <- function(parameters,
     
     
     ###############################################################
+    setwd(FolderSplit)
+    write.csv(as.numeric(res$roc$auc), "auc.csv")
+    write.csv(as.numeric(res$macro_auc), "macro-auc.csv")
+    write.csv(as.numeric(res$micro_auc), "micro-auc.csv")
+    
+    
+    ###############################################################
     # SALVANDO AS INFORMAÇÕES DO ROC SEPARADAMENTE
     name = paste(FolderSplit, "/roc-fold-", f, ".txt", sep="")
     output.file <- file(name, "wb")
@@ -623,6 +630,10 @@ gather.eval.global.python <- function(ds,
   # dta frame
   confMatFinal = data.frame(measures)
   folds = c("")
+  final.micro.auc = c(0)
+  final.macro.auc = c(0)
+  final.auc = c(0)
+  final.proba.ma.mi.auc = c(0)
   
   # from fold = 1 to number_labels
   f = 1
@@ -639,6 +650,21 @@ gather.eval.global.python <- function(ds,
     
     folds[f] = paste("Fold-", f, sep="")
     
+    auc = data.frame(read.csv("auc.csv"))
+    names(auc) = c("fold", "value")
+    final.auc = rbind(final.auc, auc)
+    
+    micro.auc = data.frame(read.csv("micro-auc.csv"))
+    names(micro.auc) = c("fold", "value")
+    final.micro.auc = rbind(final.micro.auc, micro.auc)
+    
+    macro.auc = data.frame(read.csv("macro-auc.csv"))
+    names(macro.auc) = c("fold", "value")
+    final.macro.auc = rbind(final.macro.auc, macro.auc)
+    
+    proba.ma.mi.auc = data.frame(read.csv("y_proba_mami.csv"))
+    final.proba.ma.mi.auc = rbind(final.proba.ma.mi.auc, proba.ma.mi.auc)
+    
     f = f + 1
     gc()
   } 
@@ -648,6 +674,28 @@ gather.eval.global.python <- function(ds,
   write.csv(confMatFinal, 
             paste(diretorios$folderGlobal, "/All-Folds-Global.csv", sep=""),
             row.names = FALSE)
+  
+  final.auc = final.auc[-1,]
+  fold = seq(1, parameters$Number.Folds, by =1)
+  final.auc = data.frame(fold, auc = final.auc$value)
+  
+  final.micro.auc = final.micro.auc[-1,]
+  fold = seq(1, parameters$Number.Folds, by =1)
+  final.micro.auc = data.frame(fold, micro.auc = final.micro.auc$value)
+  
+  final.macro.auc = final.macro.auc[-1,]
+  fold = seq(1, parameters$Number.Folds, by =1)
+  final.macro.auc = data.frame(fold, macro.auc = final.macro.auc$value)
+  
+  final.proba.ma.mi.auc = final.proba.ma.mi.auc[-1,]
+  fold = seq(1, parameters$Number.Folds, by =1)
+  final.proba.ma.mi.auc = data.frame(fold, final.proba.ma.mi.auc)
+  
+  setwd(parameters$Directories$folderGlobal)
+  write.csv(final.auc, "auc.csv", row.names = FALSE)  
+  write.csv(final.macro.auc, "macro-auc.csv", row.names = FALSE)  
+  write.csv(final.micro.auc, "micro-auc.csv", row.names = FALSE)
+  write.csv(final.proba.ma.mi.auc, "ma-mi-auprc.csv", row.names = FALSE)  
   
   # calculando a média dos 10 folds para cada medida
   media = data.frame(apply(confMatFinal[,-1], 1, mean))
