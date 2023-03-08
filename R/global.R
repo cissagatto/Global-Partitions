@@ -278,10 +278,10 @@ if(implementation=="utiml"){
   cat("\n#####################################################\n\n")
   result_set <- t(data.matrix(timeFinal))
   setwd(diretorios$folderGlobal)
-  write.csv(result_set, "Runtime-Final.csv", row.names = FALSE)
+  write.csv(result_set, "Final-Runtime.csv", row.names = FALSE)
   x.minutos = (1 * as.numeric(result_set[3]))/60
   setwd(diretorios$folderGlobal)
-  write(x.minutos, "minute.txt")
+  write(x.minutos, "minutos.txt")
   
   
   # cat("\n\n###################################################")
@@ -344,7 +344,7 @@ if(implementation=="utiml"){
   cat("\n#####################################################\n\n")
   result_set <- t(data.matrix(timeFinal))
   setwd(diretorios$folderGlobal)
-  write.csv(result_set, "Runtime-Final.csv")
+  write.csv(result_set, "Final-Runtime.csv")
   x.minutos = (1 * as.numeric(result_set[3]))/60
   setwd(diretorios$folderGlobal)
   write(x.minutos, "minutos.txt")
@@ -394,7 +394,7 @@ if(implementation=="utiml"){
   cat("\n#####################################################\n\n")
   result_set <- t(data.matrix(timeFinal))
   setwd(diretorios$folderGlobal)
-  write.csv(result_set, "Runtime-Final.csv")
+  write.csv(result_set, "Final-Runtime.csv")
   x.minutos = (1 * as.numeric(result_set[3]))/60
   setwd(diretorios$folderGlobal)
   write(x.minutos, "minutos.txt")

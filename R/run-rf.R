@@ -138,7 +138,7 @@ run.rf <- function(parameters,
                         time.execute, time.evaluate, 
                         time.gather.evaluate)
   setwd(diretorios$folderGlobal)
-  write.csv(RunTimeGlobal, paste(dataset_name, "-Run-RunTime-RF.csv", sep=""))
+  write.csv(RunTimeGlobal, "Run-RunTime.csv")
   
   
   cat("\n\n###########################################################")
