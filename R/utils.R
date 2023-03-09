@@ -709,7 +709,7 @@ infoDataSet <- function(dataset){
 
 
 
-plot.roc <- function(y_pred, y_proba, teste.dataset, folder){
+plote.curva.roc <- function(y_pred, y_proba, teste.dataset, folder){
   
   library("mldr")
   

@@ -253,10 +253,10 @@ execute.global.python <- function(parameters,
     #####################################################################
     cat("\nPlot ROC curve")
     # y_pred, y_proba, mldr.teste, folder
-    plot.roc(y_pred = y_preds, 
-             y_proba = y_probas, 
-             teste.dataset = mldr.teste, 
-             folder = FolderSplit)
+    plote.curva.roc(y_pred = y_preds, 
+                    y_proba = y_probas, 
+                    teste.dataset = mldr.teste, 
+                    folder = FolderSplit)
     
     
     #####################################################################
