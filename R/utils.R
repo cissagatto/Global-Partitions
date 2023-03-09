@@ -726,7 +726,8 @@ roc.curva <- function(predictions, probabilities, test, Folder){
   print(plot(res.pred$roc, print.thres = 'all', print.auc=TRUE, 
              print.thres.cex=0.7, grid = TRUE, identity=TRUE,
              axes = TRUE, legacy.axes = TRUE, 
-             identity.col = "#a91e0e", col = "#1161d5"))
+             identity.col = "#a91e0e", col = "#1161d5",
+             main = "binary predictions"))
   dev.off()
   cat("\n")
   
@@ -737,7 +738,8 @@ roc.curva <- function(predictions, probabilities, test, Folder){
   print(plot(res.proba$roc, print.thres = 'best', print.auc=TRUE, 
              print.thres.cex=0.7, grid = TRUE, identity=TRUE,
              axes = TRUE, legacy.axes = TRUE, 
-             identity.col = "#a91e0e", col = "#1161d5"))
+             identity.col = "#a91e0e", col = "#1161d5",
+             main = "probabilities predictions"))
   dev.off()
   cat("\n")
   
