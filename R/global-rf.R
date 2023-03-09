@@ -245,15 +245,18 @@ execute.global.python <- function(parameters,
     
     
     #####################################################################
-    cat("\nPlot ROC curve")
-    # y_pred, y_proba, mldr.teste, folder
-    plot.roc(y_preds, y_probas, mldr.teste, FolderSplit)
+    cat("\nPredictions")
+    # predicoes <- function(y_trues, y_preds, folder){
+    predicoes(y_trues, y_preds, FolderSplit, nomes.rotulos)
     
     
     #####################################################################
-    cat("\nPredictions")
-    # predicoes <- function(y_trues, y_preds, folder){
-    predicoes(y_trues, y_preds, FolderSplit)
+    cat("\nPlot ROC curve")
+    # y_pred, y_proba, mldr.teste, folder
+    plot.roc(y_pred = y_preds, 
+             y_proba = y_probas, 
+             teste.dataset = mldr.teste, 
+             folder = FolderSplit)
     
     
     #####################################################################
@@ -445,18 +448,22 @@ gather.eval.global.python <- function(ds,
     
     folds[f] = paste("Fold-", f, sep="")
     
+    setwd(FolderSplit)
     proba.auc = data.frame(read.csv("proba-auc.csv"))
     names(proba.auc) = c("fold", "value")
     final.proba.auc = rbind(final.proba.auc, proba.auc)
     
+    setwd(FolderSplit)
     proba.micro.auc = data.frame(read.csv("proba-micro-auc.csv"))
     names(proba.micro.auc) = c("fold", "value")
     final.proba.micro.auc = rbind(final.proba.micro.auc, proba.micro.auc)
     
-    proba.macro.auc = data.frame(read.csv("proba.macro-auc.csv"))
+    setwd(FolderSplit)
+    proba.macro.auc = data.frame(read.csv("proba-macro-auc.csv"))
     names(proba.macro.auc) = c("fold", "value")
     final.proba.macro.auc = rbind(final.proba.macro.auc, proba.macro.auc)
     
+    setwd(FolderSplit)
     proba.ma.mi.auc = data.frame(read.csv("y_proba_mami.csv"))
     final.proba.ma.mi.auc = rbind(final.proba.ma.mi.auc, proba.ma.mi.auc)
     
@@ -486,7 +493,7 @@ gather.eval.global.python <- function(ds,
   fold = seq(1, parameters$Number.Folds, by =1)
   final.proba.ma.mi.auc = data.frame(fold, final.proba.ma.mi.auc)
   
-  setwd(parameters$Directories$folderGlobal)
+  setwd(diretorios$folderGlobal)
   write.csv(final.proba.auc, "proba-auc.csv", row.names = FALSE)  
   write.csv(final.proba.macro.auc, "proba-macro-auc.csv", row.names = FALSE)  
   write.csv(final.proba.micro.auc, "proba-micro-auc.csv", row.names = FALSE)

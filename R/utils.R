@@ -709,44 +709,18 @@ infoDataSet <- function(dataset){
 
 
 
-plot.roc <- function(y_preds, y_probas, mldr.teste, folder){
+plot.roc <- function(y_pred, y_proba, teste.dataset, folder){
   
-  library("multiROC")
-  
+  library("mldr")
   
   #####################################################################
-  y_pred2 = sapply(y_preds, function(x) as.numeric(as.character(x)))
-  resPred = mldr_evaluate(mldr.teste, y_pred2)
+  y_pred2 = sapply(y_pred, function(x) as.numeric(as.character(x)))
+  res.pred = mldr_evaluate(teste.dataset, y_pred2)
+  # print(res.pred)
   
-  y_proba2 = sapply(y_probas, function(x) as.numeric(as.character(x)))
-  resProba = mldr_evaluate(mldr.teste, y_proba2)
-  
-  
-  ###############################################################
-  # PLOTANDO ROC CURVE
-  
-  name = paste(folder, "/roc-proba.pdf", sep="")
-  pdf(name, width = 10, height = 8)
-  print(plot(resProba$roc, print.thres = 'best', print.auc=TRUE, 
-             print.thres.cex=0.7, grid = TRUE, identity=TRUE,
-             axes = TRUE, legacy.axes = TRUE, 
-             identity.col = "#a91e0e", col = "#1161d5",
-             main = "Binary Predictions"))
-  dev.off()
-  cat("\n")
-  
-  
-  
-  name = paste(folder, "/roc-pred.pdf", sep="")
-  pdf(name, width = 10, height = 8)
-  print(plot(res.pred$roc, print.thres = 'best', print.auc=TRUE, 
-             print.thres.cex=0.7, grid = TRUE, identity=TRUE,
-             axes = TRUE, legacy.axes = TRUE, 
-             identity.col = "#a91e0e", col = "#1161d5",
-             main = "Binary Predictions"))
-  dev.off()
-  cat("\n")
-  
+  y_proba2 = sapply(y_proba, function(x) as.numeric(as.character(x)))
+  res.proba = mldr_evaluate(teste.dataset, y_proba2)
+  # print(res.proba)
   
   
   ###############################################################
@@ -755,11 +729,12 @@ plot.roc <- function(y_preds, y_probas, mldr.teste, folder){
   write.csv(as.numeric(res.pred$macro_auc), "pred-macro-auc.csv")
   write.csv(as.numeric(res.pred$micro_auc), "pred-micro-auc.csv")
   
+  
   ###############################################################
   setwd(folder)
-  write.csv(as.numeric(res.prob$roc$auc), "proba-auc.csv")
-  write.csv(as.numeric(res.prob$macro_auc), "proba-macro-auc.csv")
-  write.csv(as.numeric(res.prob$micro_auc), "proba-micro-auc.csv")
+  write.csv(as.numeric(res.proba$roc$auc), "proba-auc.csv")
+  write.csv(as.numeric(res.proba$macro_auc), "proba-macro-auc.csv")
+  write.csv(as.numeric(res.proba$micro_auc), "proba-micro-auc.csv")
   
   
   ###############################################################
@@ -890,6 +865,7 @@ plot.roc <- function(y_preds, y_probas, mldr.teste, folder){
   str(res.pred)
   sink()
   
+  
   ###############################################################
   # SALVANDO AS OUTRAS INFORMAÇÕES
   name = paste(folder, "/proba-roc.txt", sep="")
@@ -899,10 +875,36 @@ plot.roc <- function(y_preds, y_probas, mldr.teste, folder){
   str(res.proba)
   sink()
   
+  
+  ###############################################################
+  # PLOTANDO ROC CURVE
+  
+  # name = paste(folder, "/roc-proba.pdf", sep="")
+  # pdf(name, width = 10, height = 8)
+  # print(plot(res.proba$roc,
+  #            print.thres = 'best', print.auc=TRUE, 
+  #            print.thres.cex=0.7, grid = TRUE, identity=TRUE,
+  #            axes = TRUE, legacy.axes = TRUE, 
+  #            identity.col = "#a91e0e", col = "#1161d5",
+  #            main = "Binary Predictions"))
+  # dev.off()
+  # cat("\n")
+  # 
+  # 
+  # name = paste(folder, "/roc-pred.pdf", sep="")
+  # pdf(name, width = 10, height = 8)
+  # print(plot(res.pred$roc, print.thres = 'best', print.auc=TRUE, 
+  #            print.thres.cex=0.7, grid = TRUE, identity=TRUE,
+  #            axes = TRUE, legacy.axes = TRUE, 
+  #            identity.col = "#a91e0e", col = "#1161d5",
+  #            main = "Binary Predictions"))
+  # dev.off()
+  # cat("\n")
+  
 }
 
 
-predicoes <- function(y_trues, y_preds, folder){
+predicoes <- function(y_trues, y_preds, folder, nomes.rotulos){
   
   ###############################################
   bipartition = data.frame(y_trues, y_preds)
@@ -921,7 +923,7 @@ predicoes <- function(y_trues, y_preds, folder){
   
   # salvando
   res = rbind(num.positive.instances, num.negative.instances)
-  name = paste(folder, "/instances-pn-", f, ".csv", sep="")
+  name = paste(folder, "/instances-pn.csv", sep="")
   write.csv(res, name)
   
   # calcular rótulo verdadeiro igual a 1
@@ -942,7 +944,7 @@ predicoes <- function(y_trues, y_preds, folder){
   
   matriz_totais = cbind(total_true_0, total_true_1, total_pred_0, total_pred_1)
   row.names(matriz_totais) = nomes.rotulos
-  name = paste(folder, "/trues-preds-", f, ".csv", sep="")
+  name = paste(folder, "/trues-pred.csv", sep="")
   write.csv(matriz_totais, name)
   
   # Verdadeiro Positivo: O modelo previu 1 e a resposta correta é 1
@@ -966,7 +968,7 @@ predicoes <- function(y_trues, y_preds, folder){
   names(FNi) = fni
   
   fpnt = data.frame(TPi, FPi, FNi, TNi)
-  name = paste(FolderSplit, "/fpnt-", f, ".csv", sep="")
+  name = paste(folder, "/fpnt.csv", sep="")
   write.csv(fpnt, name, row.names = FALSE)
   
   # total de verdadeiros positivos

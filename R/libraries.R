@@ -36,10 +36,10 @@ FolderScripts = "~/Global-Partitions/R"
 # LOAD EXTERNAL LIBRARIES                                                                        #
 ##################################################################################################
 
+library("mldr", quietly = TRUE) 
 library("readr", quietly = TRUE) 
 library("foreign", quietly = TRUE) 
 library("stringr", quietly = TRUE) 
-library("mldr", quietly = TRUE) 
 library("plyr", quietly = TRUE) 
 library("dplyr", quietly = TRUE) 
 library("reshape2", quietly = TRUE) 
@@ -50,7 +50,8 @@ library("RWeka", quietly = TRUE)
 library("rJava", quietly = TRUE) 
 library("foreach", quietly = TRUE) 
 library("doParallel", quietly = TRUE)
-library("multiROC", quietly = TRUE) 
+# library("multiROC", quietly = TRUE)
+# library("pROC", quietly = TRUE) 
 
 
 ##################################################################################################
