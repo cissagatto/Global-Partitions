@@ -417,80 +417,94 @@ gather.eval.global.python <- function(ds,
   retorno = list()
   
   # vector with names measures
-  measures = c("accuracy","average-precision","clp",
-               "coverage","F1","hamming-loss","macro-AUC",
-               "macro-F1","macro-precision","macro-recall",
-               "margin-loss","micro-AUC","micro-F1",
-               "micro-precision","micro-recall","mlp",
-               "one-error","precision","ranking-loss",
+  measures = c("accuracy","average-precision","clp","coverage","F1","hamming-loss","macro-AUC",
+               "macro-F1","macro-precision","macro-recall","margin-loss","micro-AUC","micro-F1",
+               "micro-precision","micro-recall","mlp","one-error","precision","ranking-loss",
                "recall","subset-accuracy","wlp")
   
   # dta frame
   confMatFinal = data.frame(measures)
   folds = c("")
+  
   final.proba.micro.auc = c(0)
   final.proba.macro.auc = c(0)
   final.proba.auc = c(0)
   final.proba.ma.mi.auc = c(0)
   
+  final.pred.micro.auc = c(0)
+  final.pred.macro.auc = c(0)
+  final.pred.auc = c(0)
+  
   # from fold = 1 to number_labels
   f = 1
   while(f<= number_folds){
     cat("\nFold: ", f)
-    
-    FolderSplit = paste(diretorios$folderGlobal, "/Split-", f, sep="")
-    setwd(FolderSplit)
+        
+    folderSplit = paste(diretorios$folderGlobal, "/Split-", f, sep="")
+    setwd(folderSplit)
     
     # cat("\n\tOpen ResConfMat ", f)
-    confMat = data.frame(read.csv(paste(FolderSplit, "/ResConfMat.csv", sep="")))
+    confMat = data.frame(read.csv(paste(folderSplit, "/ResConfMat.csv", sep="")))
     names(confMat) = c("Measures", "Fold")
     confMatFinal = cbind(confMatFinal, confMat$Fold) 
-    
     folds[f] = paste("Fold-", f, sep="")
+    setwd(folderSplit)
+    unlink("y_predict.csv", recursive = TRUE)
+    unlink("y_true.csv", recursive = TRUE)
     
-    setwd(FolderSplit)
+    setwd(folderSplit)
+    
+    #################################
     proba.auc = data.frame(read.csv("proba-auc.csv"))
     names(proba.auc) = c("fold", "value")
     final.proba.auc = rbind(final.proba.auc, proba.auc)
     
-    setwd(FolderSplit)
     proba.micro.auc = data.frame(read.csv("proba-micro-auc.csv"))
     names(proba.micro.auc) = c("fold", "value")
     final.proba.micro.auc = rbind(final.proba.micro.auc, proba.micro.auc)
     
-    setwd(FolderSplit)
     proba.macro.auc = data.frame(read.csv("proba-macro-auc.csv"))
     names(proba.macro.auc) = c("fold", "value")
     final.proba.macro.auc = rbind(final.proba.macro.auc, proba.macro.auc)
     
-    setwd(FolderSplit)
     proba.ma.mi.auc = data.frame(read.csv("y_proba_mami.csv"))
     final.proba.ma.mi.auc = rbind(final.proba.ma.mi.auc, proba.ma.mi.auc)
+    
+    ##################
+    pred.auc = data.frame(read.csv("pred-auc.csv"))
+    names(pred.auc) = c("fold", "value")
+    final.pred.auc = rbind(final.pred.auc, pred.auc)
+    
+    pred.micro.auc = data.frame(read.csv("pred-micro-auc.csv"))
+    names(pred.micro.auc) = c("fold", "value")
+    final.pred.micro.auc = rbind(final.pred.micro.auc, pred.micro.auc)
+    
+    pred.macro.auc = data.frame(read.csv("pred-macro-auc.csv"))
+    names(pred.macro.auc) = c("fold", "value")
+    final.pred.macro.auc = rbind(final.pred.macro.auc, pred.macro.auc)
     
     f = f + 1
     gc()
   } 
   
-  cat("\nsave measures")
+  
+  # save measures
+  setwd(diretorios$folderGlobal)
   names(confMatFinal) = c("Measures", folds)
-  write.csv(confMatFinal, 
-            paste(diretorios$folderGlobal, "/All-Folds-Global.csv", sep=""),
-            row.names = FALSE)
+  write.csv(confMatFinal, paste(dataset_name, "-Local-Test-Evaluated.csv", sep=""), row.names = FALSE)
+  
+  fold = seq(1, number_folds, by =1)
   
   final.proba.auc = final.proba.auc[-1,]
-  fold = seq(1, parameters$Number.Folds, by =1)
   final.proba.auc = data.frame(fold, auc = final.proba.auc$value)
   
   final.proba.micro.auc = final.proba.micro.auc[-1,]
-  fold = seq(1, parameters$Number.Folds, by =1)
   final.proba.micro.auc = data.frame(fold, micro.auc = final.proba.micro.auc$value)
   
   final.proba.macro.auc = final.proba.macro.auc[-1,]
-  fold = seq(1, parameters$Number.Folds, by =1)
   final.proba.macro.auc = data.frame(fold, macro.auc = final.proba.macro.auc$value)
   
   final.proba.ma.mi.auc = final.proba.ma.mi.auc[-1,]
-  fold = seq(1, parameters$Number.Folds, by =1)
   final.proba.ma.mi.auc = data.frame(fold, final.proba.ma.mi.auc)
   
   setwd(diretorios$folderGlobal)
@@ -499,40 +513,49 @@ gather.eval.global.python <- function(ds,
   write.csv(final.proba.micro.auc, "proba-micro-auc.csv", row.names = FALSE)
   write.csv(final.proba.ma.mi.auc, "proba-ma-mi-auprc.csv", row.names = FALSE)  
   
+  #################
+  final.pred.auc = final.pred.auc[-1,]
+  final.pred.auc = data.frame(fold, auc = final.pred.auc$value)
+  
+  final.pred.micro.auc = final.pred.micro.auc[-1,]
+  final.pred.micro.auc = data.frame(fold, micro.auc = final.pred.micro.auc$value)
+  
+  final.pred.macro.auc = final.pred.macro.auc[-1,]
+  final.pred.macro.auc = data.frame(fold, macro.auc = final.pred.macro.auc$value)
+
+  setwd(diretorios$folderGlobal)
+  write.csv(final.pred.auc, "pred-auc.csv", row.names = FALSE)  
+  write.csv(final.pred.macro.auc, "pred-macro-auc.csv", row.names = FALSE)  
+  write.csv(final.pred.micro.auc, "pred-micro-auc.csv", row.names = FALSE)  
+  
+  
+  #######################
   # calculando a média dos 10 folds para cada medida
   media = data.frame(apply(confMatFinal[,-1], 1, mean))
   media = cbind(measures, media)
   names(media) = c("Measures", "Mean10Folds")
   
   setwd(diretorios$folderGlobal)
-  write.csv(media, 
-            paste(diretorios$folderGlobal, "/Mean10Folds.csv", sep=""), 
-            row.names = FALSE)
+  write.csv(media, "Mean10Folds.csv", row.names = FALSE)
   
   mediana = data.frame(apply(confMatFinal[,-1], 1, median))
   mediana = cbind(measures, mediana)
   names(mediana) = c("Measures", "Median10Folds")
   
   setwd(diretorios$folderGlobal)
-  write.csv(mediana, 
-            paste(diretorios$folderGlobal, "/Median10Folds.csv", sep=""),
-            row.names = FALSE)
+  write.csv(mediana, "Median10Folds.csv", row.names = FALSE)
   
   dp = data.frame(apply(confMatFinal[,-1], 1, sd))
   dp = cbind(measures, dp)
   names(dp) = c("Measures", "SD10Folds")
   
   setwd(diretorios$folderGlobal)
-  write.csv(dp,  
-            paste(diretorios$folderGlobal, 
-                  "/standard-deviation-10-folds.csv", sep=""), 
-            row.names = FALSE)
-  
+  write.csv(dp, "desvio-padrão-10-folds.csv", row.names = FALSE)
   
   gc()
-  cat("\n#############################################################")
-  cat("\n# RF GLOBAL: END OF THE FUNCTION GATHER EVALUATED           #") 
-  cat("\n#############################################################")
+  cat("\n########################################################")
+  cat("\n# END EVALUATED                                        #") 
+  cat("\n########################################################")
   cat("\n\n\n\n")
 }
 
