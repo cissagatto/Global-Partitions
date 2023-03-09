@@ -220,12 +220,28 @@ execute.global.python <- function(parameters,
     setwd(FolderSplit)
     y_preds = data.frame(read.csv("y_pred.csv"))
     y_trues = data.frame(read.csv("y_true.csv"))
-    y_probas = data.frame(read.csv("y_proba_1.csv"))
+    y_probas = data.frame(read.csv("y_proba_1.csv"))     
     
-    
-    #############################
+
+    #####################################################################
     nomes.rotulos = colnames(y_trues)
+    names(y_probas) = nomes.rotulos
+   
     
+    #####################################################################
+    cat("\nPlot ROC curve")
+    roc.curva(predictions = y_preds,
+              probabilities = y_probas,
+              test = mldr.teste,
+              Folder = FolderSplit)
+
+    ##############################################
+    cat("\nInformações das predições")
+    predictions.information(nomes.rotulos=nomes.rotulos, 
+                            proba = y_probas, 
+                            preds = y_preds, 
+                            trues = y_trues, 
+                            folder = FolderSplit)
     
     #####################################################################
     cat("\nSave original and pruned predictions")
@@ -242,24 +258,9 @@ execute.global.python <- function(parameters,
     
     setwd(FolderSplit)
     write.csv(all.predictions, "folder-predictions.csv", row.names = FALSE)
+
     
-    
-    #####################################################################
-    cat("\nPredictions")
-    # predicoes <- function(y_trues, y_preds, folder){
-    predicoes(y_trues, y_preds, FolderSplit, nomes.rotulos)
-    
-    
-    #####################################################################
-    cat("\nPlot ROC curve")
-    # y_pred, y_proba, mldr.teste, folder
-    plote.curva.roc(y_pred = y_preds, 
-                    y_proba = y_probas, 
-                    teste.dataset = mldr.teste, 
-                    folder = FolderSplit)
-    
-    
-    #####################################################################
+    ####################################################################
     cat("\nApagando arquivos")
     unlink(train.file.name)
     unlink(test.file.name)
