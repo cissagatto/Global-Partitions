@@ -140,8 +140,8 @@ execute.global.python <- function(parameters,
                                   folderResults){
   
   f = 1
-  # PYTHONGlobalParalel <- foreach(f = 1:number_folds) %dopar%{
-  while(f<=number_folds){
+  PYTHONGlobalParalel <- foreach(f = 1:number_folds) %dopar%{
+  # while(f<=number_folds){
     
     #########################################################################
     cat("\nFold: ", f)
@@ -262,7 +262,7 @@ execute.global.python <- function(parameters,
     unlink(test.file.name)
     unlink(val.file.name)
     
-    f = f + 1
+    # f = f + 1
     gc()
   }
   
