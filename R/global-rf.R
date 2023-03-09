@@ -140,8 +140,8 @@ execute.global.python <- function(parameters,
                                   folderResults){
   
   f = 1
-  PYTHONGlobalParalel <- foreach(f = 1:number_folds) %dopar%{
-    # while(f<=number_folds){
+  # PYTHONGlobalParalel <- foreach(f = 1:number_folds) %dopar%{
+  while(f<=number_folds){
     
     #########################################################################
     cat("\nFold: ", f)
@@ -220,7 +220,7 @@ execute.global.python <- function(parameters,
     setwd(FolderSplit)
     y_preds = data.frame(read.csv("y_pred.csv"))
     y_trues = data.frame(read.csv("y_true.csv"))
-    y_proba = data.frame(read.csv("y_proba_1.csv"))
+    y_probas = data.frame(read.csv("y_proba_1.csv"))
     
     
     #############################
@@ -228,7 +228,7 @@ execute.global.python <- function(parameters,
     
     
     #####################################################################
-    cat("\n\tSave original and pruned predictions\n")
+    cat("\nSave original and pruned predictions")
     pred.o = paste(colnames(y_preds), "-pred", sep="")
     names(y_preds) = pred.o
     
@@ -236,238 +236,33 @@ execute.global.python <- function(parameters,
     names(y_trues) = true.labels
     
     proba = paste(names.rotulos, "-proba", sep="")
-    names(y_proba) = proba
+    names(y_probas) = proba
     
-    all.predictions = cbind(y_preds, y_trues, y_proba)
+    all.predictions = cbind(y_preds, y_trues, y_probas)
+    
     setwd(FolderSplit)
     write.csv(all.predictions, "folder-predictions.csv", row.names = FALSE)
     
     
     #####################################################################
-    y_pred2 = sapply(y_preds, function(x) as.numeric(as.character(x)))
-    res = mldr_evaluate(mldr.teste, y_pred2)
-    
-    # MEDIDAS DE AVALIAÇÃO
-    accuracy = res$accuracy
-    example.auc = res$example_auc
-    average.precision = res$average_precision
-    coverage = res$coverage
-    f1 = res$fmeasure
-    hamming.loss = res$hamming_loss
-    macro.auc = res$macro_auc 
-    macro.f1 = res$macro_fmeasure
-    macro.precision = res$macro_precision
-    macro.recall = res$macro_recall
-    micro.auc = res$micro_auc
-    micro.f1 = res$micro_fmeasure
-    micro.precision = res$micro_precision
-    micro.recall = res$micro_recall
-    one.error = res$one_error
-    precision = res$precision
-    ranking.loss = res$ranking_loss
-    recall = res$recall
-    subset.accuracy = res$subset_accuracy
-    
-    evaluated = data.frame(accuracy, example.auc, average.precision,
-                           coverage, f1, hamming.loss, 
-                           macro.auc, macro.f1, macro.precision, macro.recall,
-                           micro.auc, micro.f1, micro.precision, micro.recall,
-                           one.error, precision, ranking.loss, recall,
-                           subset.accuracy)
-    measures = colnames(evaluated)
-    evaluated.2 = t(evaluated)
-    evaluated.3 = data.frame(measures, evaluated.2)
-    names(evaluated.3) = c("measures", "evaluated")
-    name = paste(FolderSplit, "/fold-", f, "-evaluated-a.csv", sep="")
-    write.csv(evaluated.3, name, row.names = FALSE)
+    cat("\nPlot ROC curve")
+    # y_pred, y_proba, mldr.teste, folder
+    plot.roc(y_preds, y_probas, mldr.teste, FolderSplit)
     
     
-    ###############################################################
-    # PLOTANDO ROC CURVE
-    name = paste(FolderSplit, "/plot-roc-", f, ".pdf", sep="")
-    pdf(name, width = 10, height = 8)
-    print(plot(res$roc, print.thres = 'all', print.auc=TRUE, 
-               print.thres.cex=0.7, grid = TRUE, identity=TRUE,
-               axes = TRUE, legacy.axes = TRUE, 
-               identity.col = "#a91e0e", col = "#1161d5"))
-    dev.off()
-    cat("\n")
+    #####################################################################
+    cat("\nPredictions")
+    # predicoes <- function(y_trues, y_preds, folder){
+    predicoes(y_trues, y_preds, FolderSplit)
     
     
-    ###############################################################
-    setwd(FolderSplit)
-    write.csv(as.numeric(res$roc$auc), "auc.csv")
-    write.csv(as.numeric(res$macro_auc), "macro-auc.csv")
-    write.csv(as.numeric(res$micro_auc), "micro-auc.csv")
-    
-    
-    ###############################################################
-    # SALVANDO AS INFORMAÇÕES DO ROC SEPARADAMENTE
-    name = paste(FolderSplit, "/roc-fold-", f, ".txt", sep="")
-    output.file <- file(name, "wb")
-    
-    write(" ", file = output.file, append = TRUE)
-    write("percent: ", file = output.file, append = TRUE)
-    write(res$roc$percent, file = output.file, append = TRUE)
-    
-    write(" ", file = output.file, append = TRUE)
-    write("sensitivities: ", file = output.file, append = TRUE)
-    write(res$roc$sensitivities, file = output.file, append = TRUE)
-    
-    write(" ", file = output.file, append = TRUE)
-    write("specificities: ", file = output.file, append = TRUE)
-    write(res$roc$specificities, file = output.file, append = TRUE)
-    
-    write(" ", file = output.file, append = TRUE)
-    write("thresholds: ", file = output.file, append = TRUE)
-    write(res$roc$thresholds, file = output.file, append = TRUE)
-    
-    write(" ", file = output.file, append = TRUE)
-    write("direction: ", file = output.file, append = TRUE)
-    write(res$roc$direction, file = output.file, append = TRUE)
-    
-    write(" ", file = output.file, append = TRUE)
-    write("cases: ", file = output.file, append = TRUE)
-    write(res$roc$cases, file = output.file, append = TRUE)
-    
-    write(" ", file = output.file, append = TRUE)
-    write("controls: ", file = output.file, append = TRUE)
-    write(res$roc$controls, file = output.file, append = TRUE)
-    
-    write(" ", file = output.file, append = TRUE)
-    write("auc: ", file = output.file, append = TRUE)
-    write(res$roc$auc, file = output.file, append = TRUE)
-    
-    write(" ", file = output.file, append = TRUE)
-    write("original predictor: ", file = output.file, append = TRUE)
-    write(res$roc$original.predictor, file = output.file, append = TRUE)
-    
-    write(" ", file = output.file, append = TRUE)
-    write("original response: ", file = output.file, append = TRUE)
-    write(res$roc$original.response, file = output.file, append = TRUE)
-    
-    write(" ", file = output.file, append = TRUE)
-    write("predictor: ", file = output.file, append = TRUE)
-    write(res$roc$predictor, file = output.file, append = TRUE)
-    
-    write(" ", file = output.file, append = TRUE)
-    write("response: ", file = output.file, append = TRUE)
-    write(res$roc$response, file = output.file, append = TRUE)
-    
-    write(" ", file = output.file, append = TRUE)
-    write("levels: ", file = output.file, append = TRUE)
-    write(res$roc$levels, file = output.file, append = TRUE)
-    
-    close(output.file)
-    
-    
-    ###############################################################
-    # SALVANDO AS OUTRAS INFORMAÇÕES
-    name = paste(FolderSplit, "/roc-info-fold-", f, ".txt", sep="")
-    sink(name, type = "output")
-    print(res$roc)
-    cat("\n\n")
-    str(res)
-    sink()
-    
-    ###############################################
-    bipartition = data.frame(y_trues, y_preds)
-    
-    # número de instâncias do conjunto
-    num.instancias = nrow(bipartition)
-    
-    # número de rótulos do conjunto
-    num.rotulos = ncol(y_trues)
-    
-    # número de instâncias positivas
-    num.positive.instances = apply(bipartition, 2, sum)
-    
-    # número de instâncias negativas
-    num.negative.instances = num.instancias - num.positive.instances 
-    
-    # salvando
-    res = rbind(num.positive.instances, num.negative.instances)
-    name = paste(FolderSplit, "/instances-pn-", f, ".csv", sep="")
-    write.csv(res, name)
-    
-    # calcular rótulo verdadeiro igual a 1
-    true_1 = data.frame(ifelse(y_trues==1,1,0))
-    total_true_1 = apply(true_1, 2, sum)
-    
-    # calcular rótulo verdadeiro igual a 0
-    true_0 = data.frame(ifelse(y_trues==0,1,0))
-    total_true_0 = apply(true_0, 2, sum)
-    
-    # calcular rótulo predito igual a 1
-    pred_1 = data.frame(ifelse(y_preds==1,1,0))
-    total_pred_1 = apply(pred_1, 2, sum)
-    
-    # calcular rótulo verdadeiro igual a 0
-    pred_0 = data.frame(ifelse(y_preds==0,1,0))
-    total_pred_0 = apply(pred_0, 2, sum)
-    
-    matriz_totais = cbind(total_true_0, total_true_1, total_pred_0, total_pred_1)
-    row.names(matriz_totais) = nomes.rotulos
-    name = paste(FolderSplit, "/trues-preds-", f, ".csv", sep="")
-    write.csv(matriz_totais, name)
-    
-    # Verdadeiro Positivo: O modelo previu 1 e a resposta correta é 1
-    TPi  = data.frame(ifelse((true_1 & true_1),1,0))
-    tpi = paste(nomes.rotulos, "-TP", sep="")
-    names(TPi) = tpi
-    
-    # Verdadeiro Negativo: O modelo previu 0 e a resposta correta é 0
-    TNi  = data.frame(ifelse((true_0 & pred_0),1,0))
-    tni = paste(nomes.rotulos, "-TN", sep="")
-    names(TNi) = tni
-    
-    # Falso Positivo: O modelo previu 1 e a resposta correta é 0
-    FPi  = data.frame(ifelse((true_0 & pred_1),1,0))
-    fpi = paste(nomes.rotulos, "-FP", sep="")
-    names(FPi) = fpi
-    
-    # Falso Negativo: O modelo previu 0 e a resposta correta é 1
-    FNi  = data.frame(ifelse((true_1 & pred_0),1,0))
-    fni = paste(nomes.rotulos, "-FN", sep="")
-    names(FNi) = fni
-    
-    fpnt = data.frame(TPi, FPi, FNi, TNi)
-    name = paste(FolderSplit, "/fpnt-", f, ".csv", sep="")
-    write.csv(fpnt, name, row.names = FALSE)
-    
-    # total de verdadeiros positivos
-    TPl = apply(TPi, 2, sum)
-    tpl = paste(nomes.rotulos, "-TP", sep="")
-    names(TPl) = tpl
-    
-    # total de verdadeiros negativos
-    TNl = apply(TNi, 2, sum)
-    tnl = paste(nomes.rotulos, "-TN", sep="")
-    names(TNl) = tnl
-    
-    # total de falsos negativos
-    FNl = apply(FNi, 2, sum)
-    fnl = paste(nomes.rotulos, "-FN", sep="")
-    names(FNl) = fnl
-    
-    # total de falsos positivos
-    FPl = apply(FPi, 2, sum)
-    fpl = paste(nomes.rotulos, "-FP", sep="")
-    names(FPl) = fpl
-    
-    matriz_confusao_por_rotulos = data.frame(TPl, FPl, FNl, TNl)
-    colnames(matriz_confusao_por_rotulos) = c("TP","FP", "FN", "TN")
-    row.names(matriz_confusao_por_rotulos) = nomes.rotulos
-    name = paste(FolderSplit, "/mc-", f, ".csv", sep="")
-    write.csv(matriz_confusao_por_rotulos, name)
-    
-    # apagando arquivos
+    #####################################################################
+    cat("\nApagando arquivos")
     unlink(train.file.name)
     unlink(test.file.name)
     unlink(val.file.name)
     
-    
-    #f = f + 1
+    f = f + 1
     gc()
   }
   
