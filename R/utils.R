@@ -716,17 +716,18 @@ plot.roc <- function(y_preds, y_probas, mldr.teste, folder){
   
   #####################################################################
   y_pred2 = sapply(y_preds, function(x) as.numeric(as.character(x)))
-  res.pred = mldr_evaluate(mldr.teste, y_pred2)
+  resPred = mldr_evaluate(mldr.teste, y_pred2)
   
   y_proba2 = sapply(y_probas, function(x) as.numeric(as.character(x)))
-  res.proba = mldr_evaluate(mldr.teste, y_proba2)
+  resProba = mldr_evaluate(mldr.teste, y_proba2)
   
   
   ###############################################################
   # PLOTANDO ROC CURVE
-  name = paste(folder, "/roc-pred.pdf", sep="")
+  
+  name = paste(folder, "/roc-proba.pdf", sep="")
   pdf(name, width = 10, height = 8)
-  print(plot(res.pred$roc, print.thres = 'all', print.auc=TRUE, 
+  print(plot(resProba$roc, print.thres = 'best', print.auc=TRUE, 
              print.thres.cex=0.7, grid = TRUE, identity=TRUE,
              axes = TRUE, legacy.axes = TRUE, 
              identity.col = "#a91e0e", col = "#1161d5",
@@ -734,15 +735,18 @@ plot.roc <- function(y_preds, y_probas, mldr.teste, folder){
   dev.off()
   cat("\n")
   
-  name = paste(folder, "/roc-proba.pdf", sep="")
+  
+  
+  name = paste(folder, "/roc-pred.pdf", sep="")
   pdf(name, width = 10, height = 8)
-  print(plot(res.proba$roc, print.thres = 'best', print.auc=TRUE, 
+  print(plot(res.pred$roc, print.thres = 'best', print.auc=TRUE, 
              print.thres.cex=0.7, grid = TRUE, identity=TRUE,
              axes = TRUE, legacy.axes = TRUE, 
              identity.col = "#a91e0e", col = "#1161d5",
-             main = "Probabilities Predictions"))
+             main = "Binary Predictions"))
   dev.off()
   cat("\n")
+  
   
   
   ###############################################################
