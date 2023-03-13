@@ -51,7 +51,7 @@ n = nrow(datasets)
 ###############################################################################
 # CREATING FOLDER TO SAVE CONFIG FILES                                        #
 ###############################################################################
-FolderCF = paste(FolderRoot, "/config-files-1", sep="")
+FolderCF = paste(FolderRoot, "/config-files", sep="")
 if(dir.exists(FolderCF)==FALSE){dir.create(FolderCF)}
 
 
@@ -99,7 +99,7 @@ while(w<=length(Implementation.1)){
     # write("Dataset_Path, /home/u704616/Datasets", 
     #      file = output.file, append = TRUE)
     
-    write("Dataset_Path, /Datasets", 
+    write("Dataset_Path, /home/elaine/Datasets", 
           file = output.file, append = TRUE)
     
     # write("Dataset_Path, /home/biomal/Datasets", 
