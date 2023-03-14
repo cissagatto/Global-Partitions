@@ -51,7 +51,7 @@ n = nrow(datasets)
 ###############################################################################
 # CREATING FOLDER TO SAVE CONFIG FILES                                        #
 ###############################################################################
-FolderCF = paste(FolderRoot, "/config-files", sep="")
+FolderCF = paste(FolderRoot, "/config-files-2", sep="")
 if(dir.exists(FolderCF)==FALSE){dir.create(FolderCF)}
 
 
@@ -93,29 +93,29 @@ while(w<=length(Implementation.1)){
     # Config file table header
     write("Config, Value", file = output.file, append = TRUE)
     
-    # write("Dataset_Path, /home/elaine/Datasets", 
-    #      file = output.file, append = TRUE)
+    write("Dataset_Path, /home/elaine/Datasets", 
+          file = output.file, append = TRUE)
     
     # write("Dataset_Path, /home/u704616/Datasets", 
     #      file = output.file, append = TRUE)
     
-    write("Dataset_Path, /home/elaine/Datasets", 
-          file = output.file, append = TRUE)
-    
     # write("Dataset_Path, /home/biomal/Datasets", 
+    #      file = output.file, append = TRUE)
+    
+    # write("Dataset_Path, /Datasets", 
     #      file = output.file, append = TRUE)
     
     name = paste("g", Implementation.2[w], "-", ds$Name, sep = "")
     
     # directory name - "/scratch/eg-3s-bbc1000"
-    temp.name = paste("/tmp/", name, sep = "")
+    # temp.name = paste("/tmp/", name, sep = "")
+    temp.name = paste("/dev/shm/", name, sep = "")
     
     # Absolute path to the folder where temporary processing will be done. 
     # You should use "scratch", "tmp" or "/dev/shm", it will depend on the 
     # cluster model where your experiment will be run.
     str.0 = paste("Temporary_Path, ", temp.name, sep="")
     write(str.0,file = output.file, append = TRUE)
-    
     
     # "implementation, utiml"
     str.1 = paste("Implementation, ", Implementation.1[w], sep="")

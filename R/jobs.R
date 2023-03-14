@@ -320,7 +320,7 @@ while(w<=length(pacote)){
     write(" ", file = output.file, append = TRUE)
     write("echo EXECUTANDO", file = output.file, append = TRUE)
     str = paste("singularity run --app Rscript instance://EXPG", a,
-                " /Global-Partitions/R/start.R \"",
+                " /Global-Partitions/R/global.R \"",
                 config.file.name, "\"", sep="")
     write(str, file = output.file, append = TRUE)
     

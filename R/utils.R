@@ -709,27 +709,50 @@ infoDataSet <- function(dataset){
 
 
 
-plot.roc <- function(y_pred, y_proba, teste.dataset, folder){
+roc.curva <- function(predictions, probabilities, test, Folder){
   
   #####################################################################
-  y_pred2 = sapply(y_preds, function(x) as.numeric(as.character(x)))
-  res.pred = mldr_evaluate(teste.dataset, y_pred2)
-  print(res.pred)
+  y_pred2 = sapply(predictions, function(x) as.numeric(as.character(x)))
+  res.bin = mldr_evaluate(test, y_pred2)
   
-  y_proba2 = sapply(y_probas, function(x) as.numeric(as.character(x)))
-  res.proba = mldr_evaluate(teste.dataset, y_proba2)
-  print(res.proba)
+  #####################################################################
+  y_proba2 = sapply(probabilities, function(x) as.numeric(as.character(x)))
+  res.proba = mldr_evaluate(test, y_proba2)
+  
+  ###############################################################
+  # PLOTANDO ROC CURVE
+  name = paste(Folder, "/roc-bin.pdf", sep="")
+  pdf(name, width = 10, height = 8)
+  print(plot(res.bin$roc, print.thres = 'all', print.auc=TRUE, 
+             print.thres.cex=0.7, grid = TRUE, identity=TRUE,
+             axes = TRUE, legacy.axes = TRUE, 
+             identity.col = "#a91e0e", col = "#1161d5",
+             main = "binary predictions"))
+  dev.off()
+  cat("\n")
+  
+  ###############################################################
+  # PLOTANDO ROC CURVE
+  name = paste(Folder, "/roc-proba.pdf", sep="")
+  pdf(name, width = 10, height = 8)
+  print(plot(res.proba$roc, print.thres = 'best', print.auc=TRUE, 
+             print.thres.cex=0.7, grid = TRUE, identity=TRUE,
+             axes = TRUE, legacy.axes = TRUE, 
+             identity.col = "#a91e0e", col = "#1161d5",
+             main = "probabilities predictions"))
+  dev.off()
+  cat("\n")
   
   
   ###############################################################
-  setwd(folder)
-  write.csv(as.numeric(res.pred$roc$auc), "pred-auc.csv")
-  write.csv(as.numeric(res.pred$macro_auc), "pred-macro-auc.csv")
-  write.csv(as.numeric(res.pred$micro_auc), "pred-micro-auc.csv")
+  setwd(Folder)
+  write.csv(as.numeric(res.bin$roc$auc), "bin-auc.csv")
+  write.csv(as.numeric(res.bin$macro_auc), "bin-macro-auc.csv")
+  write.csv(as.numeric(res.bin$micro_auc), "bin-micro-auc.csv")
   
   
   ###############################################################
-  setwd(folder)
+  setwd(Folder)
   write.csv(as.numeric(res.proba$roc$auc), "proba-auc.csv")
   write.csv(as.numeric(res.proba$macro_auc), "proba-macro-auc.csv")
   write.csv(as.numeric(res.proba$micro_auc), "proba-micro-auc.csv")
@@ -737,7 +760,7 @@ plot.roc <- function(y_pred, y_proba, teste.dataset, folder){
   
   ###############################################################
   # SALVANDO AS INFORMAÇÕES DO ROC SEPARADAMENTE
-  name = paste(folder, "/proba-roc.txt", sep="")
+  name = paste(Folder, "/roc-proba-1.txt", sep="")
   output.file <- file(name, "wb")
   
   write(" ", file = output.file, append = TRUE)
@@ -796,128 +819,114 @@ plot.roc <- function(y_pred, y_proba, teste.dataset, folder){
   
   ###############################################################
   # SALVANDO AS INFORMAÇÕES DO ROC SEPARADAMENTE
-  name = paste(folder, "/pred-roc.txt", sep="")
+  name = paste(Folder, "/roc-bin-1.txt", sep="")
   output.file <- file(name, "wb")
   
   write(" ", file = output.file, append = TRUE)
   write("percent: ", file = output.file, append = TRUE)
-  write(res.pred$roc$percent, file = output.file, append = TRUE)
+  write(res.bin$roc$percent, file = output.file, append = TRUE)
   
   write(" ", file = output.file, append = TRUE)
   write("sensitivities: ", file = output.file, append = TRUE)
-  write(res.pred$roc$sensitivities, file = output.file, append = TRUE)
+  write(res.bin$roc$sensitivities, file = output.file, append = TRUE)
   
   write(" ", file = output.file, append = TRUE)
   write("specificities: ", file = output.file, append = TRUE)
-  write(res.pred$roc$specificities, file = output.file, append = TRUE)
+  write(res.bin$roc$specificities, file = output.file, append = TRUE)
   
   write(" ", file = output.file, append = TRUE)
   write("thresholds: ", file = output.file, append = TRUE)
-  write(res.pred$roc$thresholds, file = output.file, append = TRUE)
+  write(res.bin$roc$thresholds, file = output.file, append = TRUE)
   
   write(" ", file = output.file, append = TRUE)
   write("direction: ", file = output.file, append = TRUE)
-  write(res.pred$roc$direction, file = output.file, append = TRUE)
+  write(res.bin$roc$direction, file = output.file, append = TRUE)
   
   write(" ", file = output.file, append = TRUE)
   write("cases: ", file = output.file, append = TRUE)
-  write(res.pred$roc$cases, file = output.file, append = TRUE)
+  write(res.bin$roc$cases, file = output.file, append = TRUE)
   
   write(" ", file = output.file, append = TRUE)
   write("controls: ", file = output.file, append = TRUE)
-  write(res.pred$roc$controls, file = output.file, append = TRUE)
+  write(res.bin$roc$controls, file = output.file, append = TRUE)
   
   write(" ", file = output.file, append = TRUE)
   write("auc: ", file = output.file, append = TRUE)
-  write(res.pred$roc$auc, file = output.file, append = TRUE)
+  write(res.bin$roc$auc, file = output.file, append = TRUE)
   
   write(" ", file = output.file, append = TRUE)
   write("original predictor: ", file = output.file, append = TRUE)
-  write(res.pred$roc$original.predictor, file = output.file, append = TRUE)
+  write(res.bin$roc$original.predictor, file = output.file, append = TRUE)
   
   write(" ", file = output.file, append = TRUE)
   write("original response: ", file = output.file, append = TRUE)
-  write(res.pred$roc$original.response, file = output.file, append = TRUE)
+  write(res.bin$roc$original.response, file = output.file, append = TRUE)
   
   write(" ", file = output.file, append = TRUE)
   write("predictor: ", file = output.file, append = TRUE)
-  write(res.pred$roc$predictor, file = output.file, append = TRUE)
+  write(res.bin$roc$predictor, file = output.file, append = TRUE)
   
   write(" ", file = output.file, append = TRUE)
   write("response: ", file = output.file, append = TRUE)
-  write(res.pred$roc$response, file = output.file, append = TRUE)
+  write(res.bin$roc$response, file = output.file, append = TRUE)
   
   write(" ", file = output.file, append = TRUE)
   write("levels: ", file = output.file, append = TRUE)
-  write(res.pred$roc$levels, file = output.file, append = TRUE)
+  write(res.bin$roc$levels, file = output.file, append = TRUE)
   
   close(output.file)
   
   
   ###############################################################
   # SALVANDO AS OUTRAS INFORMAÇÕES
-  name = paste(folder, "/pred-roc.txt", sep="")
+  name = paste(Folder, "/roc-bin-2.txt", sep="")
   sink(name, type = "output")
-  print(res.pred$roc)
+  print(res.bin$roc)
   cat("\n\n")
-  str(res.pred)
+  str(res.bin)
   sink()
   
   
   ###############################################################
   # SALVANDO AS OUTRAS INFORMAÇÕES
-  name = paste(folder, "/proba-roc.txt", sep="")
+  name = paste(Folder, "/roc-proba-2.txt", sep="")
   sink(name, type = "output")
   print(res.proba$roc)
   cat("\n\n")
   str(res.proba)
   sink()
-  
-  
-  ###############################################################
-  # PLOTANDO ROC CURVE
-  
-  plot(res.pred$roc)
-  
-  roc.plot(res.pred$roc)
-  
-  library("mldr", quietly = TRUE) 
-  
-  name = paste(folder, "/roc-proba.pdf", sep="")
-  pdf(name, width = 10, height = 8)
-  print(plot(res.proba$roc, print.thres = 'best', print.auc=TRUE, 
-             print.thres.cex=0.7, grid = TRUE, identity=TRUE,
-             axes = TRUE, legacy.axes = TRUE, 
-             identity.col = "#a91e0e", col = "#1161d5",
-             main = "Binary Predictions"))
-  dev.off()
-  cat("\n")
-  
-  
-  
-  name = paste(folder, "/roc-pred.pdf", sep="")
-  pdf(name, width = 10, height = 8)
-  print(plot(res.pred$roc, print.thres = 'best', print.auc=TRUE, 
-             print.thres.cex=0.7, grid = TRUE, identity=TRUE,
-             axes = TRUE, legacy.axes = TRUE, 
-             identity.col = "#a91e0e", col = "#1161d5",
-             main = "Binary Predictions"))
-  dev.off()
-  cat("\n")
-  
 }
 
 
-predicoes <- function(y_trues, y_preds, folder){
+predictions.information <- function(nomes.rotulos, 
+                                    proba, 
+                                    preds, 
+                                    trues, 
+                                    folder){
+  
+  #####################################################################
+  pred.o = paste(colnames(preds), "-pred", sep="")
+  names(preds) = pred.o
+  
+  true.labels = paste(colnames(trues), "-true", sep="")
+  names(trues) = true.labels
+  
+  proba.n = paste(nomes.rotulos, "-proba", sep="")
+  names(proba) = proba.n
+  
+  all.predictions = cbind(proba, preds, trues)
+  
+  # setwd(folder)
+  # write.csv(all.predictions, "predictions.csv", row.names = FALSE)
   
   ###############################################
-  bipartition = data.frame(y_trues, y_preds)
+  bipartition = data.frame(trues, preds)
   
   # número de instâncias do conjunto
   num.instancias = nrow(bipartition)
   
   # número de rótulos do conjunto
-  num.rotulos = ncol(y_trues)
+  num.rotulos = ncol(trues)
   
   # número de instâncias positivas
   num.positive.instances = apply(bipartition, 2, sum)
@@ -931,24 +940,24 @@ predicoes <- function(y_trues, y_preds, folder){
   write.csv(res, name)
   
   # calcular rótulo verdadeiro igual a 1
-  true_1 = data.frame(ifelse(y_trues==1,1,0))
+  true_1 = data.frame(ifelse(trues==1,1,0))
   total_true_1 = apply(true_1, 2, sum)
   
   # calcular rótulo verdadeiro igual a 0
-  true_0 = data.frame(ifelse(y_trues==0,1,0))
+  true_0 = data.frame(ifelse(trues==0,1,0))
   total_true_0 = apply(true_0, 2, sum)
   
   # calcular rótulo predito igual a 1
-  pred_1 = data.frame(ifelse(y_preds==1,1,0))
+  pred_1 = data.frame(ifelse(preds==1,1,0))
   total_pred_1 = apply(pred_1, 2, sum)
   
   # calcular rótulo verdadeiro igual a 0
-  pred_0 = data.frame(ifelse(y_preds==0,1,0))
+  pred_0 = data.frame(ifelse(preds==0,1,0))
   total_pred_0 = apply(pred_0, 2, sum)
   
   matriz_totais = cbind(total_true_0, total_true_1, total_pred_0, total_pred_1)
   row.names(matriz_totais) = nomes.rotulos
-  name = paste(folder, "/trues-pred.csv", sep="")
+  name = paste(folder, "/trues-preds.csv", sep="")
   write.csv(matriz_totais, name)
   
   # Verdadeiro Positivo: O modelo previu 1 e a resposta correta é 1
@@ -972,7 +981,7 @@ predicoes <- function(y_trues, y_preds, folder){
   names(FNi) = fni
   
   fpnt = data.frame(TPi, FPi, FNi, TNi)
-  name = paste(FolderSplit, "/fpnt.csv", sep="")
+  name = paste(folder, "/tfpn.csv", sep="")
   write.csv(fpnt, name, row.names = FALSE)
   
   # total de verdadeiros positivos
@@ -998,11 +1007,10 @@ predicoes <- function(y_trues, y_preds, folder){
   matriz_confusao_por_rotulos = data.frame(TPl, FPl, FNl, TNl)
   colnames(matriz_confusao_por_rotulos) = c("TP","FP", "FN", "TN")
   row.names(matriz_confusao_por_rotulos) = nomes.rotulos
-  name = paste(folder, "/matriz-confusao-2.csv", sep="")
+  name = paste(folder, "/my-matrix-confusion.csv", sep="")
   write.csv(matriz_confusao_por_rotulos, name)
   
 }
-
 
 ##################################################################################################
 # Please, any errors, contact us: elainececiliagatto@gmail.com                                   #

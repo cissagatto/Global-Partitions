@@ -235,6 +235,7 @@ execute.global.python <- function(parameters,
               test = mldr.teste,
               Folder = FolderSplit)
 
+
     ##############################################
     cat("\nInformações das predições")
     predictions.information(nomes.rotulos=nomes.rotulos, 
@@ -379,7 +380,7 @@ evaluate.global.python <- function(ds,
                           wrong.perc, correct.perc)
     
     setwd(FolderSplit)
-    write.csv(conf.mat, "matrix-confusion.csv")
+    write.csv(conf.mat, "utiml-matrix-confusion.csv")
     
     #f = f + 1
     gc()
@@ -472,15 +473,15 @@ gather.eval.global.python <- function(ds,
     final.proba.ma.mi.auc = rbind(final.proba.ma.mi.auc, proba.ma.mi.auc)
     
     ##################
-    pred.auc = data.frame(read.csv("pred-auc.csv"))
+    pred.auc = data.frame(read.csv("bin-auc.csv"))
     names(pred.auc) = c("fold", "value")
     final.pred.auc = rbind(final.pred.auc, pred.auc)
     
-    pred.micro.auc = data.frame(read.csv("pred-micro-auc.csv"))
+    pred.micro.auc = data.frame(read.csv("bin-micro-auc.csv"))
     names(pred.micro.auc) = c("fold", "value")
     final.pred.micro.auc = rbind(final.pred.micro.auc, pred.micro.auc)
     
-    pred.macro.auc = data.frame(read.csv("pred-macro-auc.csv"))
+    pred.macro.auc = data.frame(read.csv("bin-macro-auc.csv"))
     names(pred.macro.auc) = c("fold", "value")
     final.pred.macro.auc = rbind(final.pred.macro.auc, pred.macro.auc)
     
