@@ -53,13 +53,13 @@ n = nrow(datasets)
 FolderJob = paste(FolderRoot, "/jobs", sep = "")
 if (dir.exists(FolderJob) == FALSE) {dir.create(FolderJob)}
 
-FolderCF = "/Global-Partitions/config-files-1"
+FolderCF = "/Global-Partitions/config-files-ufscar"
 
 
 ###############################################################################
 # QUAL PACOTE USAR
 ###############################################################################
-pacote = c("rf", "clus")
+pacote = c("rf")
 
 
 ###############################################################################
@@ -239,7 +239,7 @@ while(w<=length(pacote)){
     
     write("", file = output.file, append = TRUE)
     write("echo COPYING SINGULARITY", file = output.file, append = TRUE)
-    str.30 = paste("cp /home/u704616/Experimentos-0.sif ", temp.name, sep ="")
+    str.30 = paste("cp /home/u704616/Experimentos.sif ", temp.name, sep ="")
     write(str.30 , file = output.file, append = TRUE)
     
     
@@ -313,7 +313,7 @@ while(w<=length(pacote)){
     write(" ", file = output.file, append = TRUE)
     write("echo INICIALIZANDO O SINGULARITY", file = output.file, append = TRUE)
     str = paste("singularity instance start --bind ~/.config/rclone/:/root/.config/rclone ", 
-                temp.name, "/Experimentos-0.sif EXPG", a, sep="")
+                temp.name, "/Experimentos.sif EXPG", a, sep="")
     write(str, file = output.file, append = TRUE)
     
     

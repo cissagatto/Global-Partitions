@@ -33,7 +33,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import average_precision_score
 
 if __name__ == '__main__':   
-    
+
     # obtendo argumentos da linha de comando
     train = pd.read_csv(sys.argv[1]) # conjunto de treino
     valid = pd.read_csv(sys.argv[2]) # conjunto de validação
@@ -41,12 +41,12 @@ if __name__ == '__main__':
     start = int(sys.argv[4])         # inicio do espaço de rótulos  
     directory = sys.argv[5]          # diretório para salvar as predições 
     
-    # train = pd.read_csv("/home/biomal/Área de Trabalho/probabilidades-erro/train.csv")
-    # valid = pd.read_csv("/home/biomal/Área de Trabalho/probabilidades-erro/valid.csv")
-    # test = pd.read_csv("/home/biomal/Área de Trabalho/probabilidades-erro/test.csv")
-    # start = 1449
-    # directory = "/home/biomal/Área de Trabalho/probabilidades-erro"
-     
+    #train = pd.read_csv("/home/biomal/Área de Trabalho/probabilidades-erro/train.csv")
+    #valid = pd.read_csv("/home/biomal/Área de Trabalho/probabilidades-erro/valid.csv")
+    #test = pd.read_csv("/home/biomal/Área de Trabalho/probabilidades-erro/test.csv")
+    #start = 1449
+    #directory = "/home/biomal/Área de Trabalho/probabilidades-erro"
+    
     # juntando treino com validação
     train = pd.concat([train,valid],axis=0).reset_index(drop=True)
     
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     # parametros do classificador base
     random_state = 0    
     n_estimators = 200
-
+    
     # inicializa o classificador base
     rf = RandomForestClassifier(n_estimators = n_estimators, random_state = random_state)
     
@@ -98,7 +98,7 @@ if __name__ == '__main__':
     probaname1 = (directory + "/y_proba.csv")   # salva todas as predições probabilísticas
     probaname2 = (directory + "/y_proba_1.csv") # salva as predições probabilísticas para 1
     
-    # salvando true labels and predict labels
+    # # salvando true labels and predict labels
     y_pred_d.to_csv(pred, index=False)
     y_true_d.to_csv(true, index=False)    
 
@@ -108,16 +108,27 @@ if __name__ == '__main__':
     ldf2 = []
     for n in range(0, len(probabilities)):
       # print(" ", n)
-      res = probabilities[n]
-      res = pd.DataFrame(res)
-      res.columns = [f'prob_{n+1}',f'prob_{n+1}']
-      ldf.append(res)
-      res2 = res.iloc[:, :1] # atributos
-      ldf2.append(res2)
+      
+      try:
+        res = probabilities[n]
+        res = pd.DataFrame(res)
+        
+        if res.shape[1] == 1:
+          res.columns = [f'prob_{n}_0'] 
+          res[f'prob_{n}_1'] = 0 
+        else:
+          res.columns = [f'prob_e{n}_0', f'prob_e{n}_1']
+        
+        ldf.append(res)
+        res2 = res.iloc[:, :1] # atributos
+        ldf2.append(res2)
+      except Exception as e:
+        print(e)
+        # print(probabilities)
+        # print(res)
     
     
     # salvando
-    print(" ")
     final = pd.concat(ldf, axis=1)
     final.to_csv(probaname1, index=False)
     
@@ -134,7 +145,3 @@ if __name__ == '__main__':
     y_proba.columns = ["Micro-AUPRC", "Macro-AUPRC"]
     name = (directory + "/y_proba_mami.csv")
     y_proba.to_csv(name, index=False)
-
-
-    
-

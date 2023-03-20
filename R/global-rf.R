@@ -199,7 +199,7 @@ execute.global.python <- function(parameters,
     ##################################################################
     # EXECUTE ECC PYTHON
     str.execute = paste("python3 ", diretorios$folderUtils,
-                        "/random-forests.py ", 
+                        "/random-forests-2.py ", 
                         train.file.name, " ",
                         val.file.name,  " ",
                         test.file.name, " ", 
