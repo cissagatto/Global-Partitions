@@ -221,16 +221,23 @@ execute.global.python <- function(parameters,
     y_preds = data.frame(read.csv("y_pred.csv"))
     y_trues = data.frame(read.csv("y_true.csv"))
     y_probas = data.frame(read.csv("y_proba_1.csv"))     
-    
 
     #####################################################################
     nomes.rotulos = colnames(y_trues)
     names(y_probas) = nomes.rotulos
+    
+    #####################################################################
+    cat("\n\tUTIML Threshold\n")
+    y_preds_2 <- data.frame(as.matrix(fixed_threshold(y_probas, 
+                                                    threshold = 0.5)))
+    
+    setwd(FolderSplit)
+    write.csv(y_preds_2, "y_predict.csv", row.names = FALSE)
    
     
     #####################################################################
     cat("\nPlot ROC curve")
-    roc.curva(predictions = y_preds,
+    roc.curva(predictions = y_preds_2,
               probabilities = y_probas,
               test = mldr.teste,
               Folder = FolderSplit)
@@ -240,14 +247,14 @@ execute.global.python <- function(parameters,
     cat("\nInformações das predições")
     predictions.information(nomes.rotulos=nomes.rotulos, 
                             proba = y_probas, 
-                            preds = y_preds, 
+                            preds = y_preds_2, 
                             trues = y_trues, 
                             folder = FolderSplit)
     
     #####################################################################
     cat("\nSave original and pruned predictions")
-    pred.o = paste(colnames(y_preds), "-pred", sep="")
-    names(y_preds) = pred.o
+    pred.o = paste(colnames(y_preds_2), "-pred", sep="")
+    names(y_preds_2) = pred.o
     
     true.labels = paste(colnames(y_trues), "-true", sep="")
     names(y_trues) = true.labels
@@ -255,7 +262,7 @@ execute.global.python <- function(parameters,
     proba = paste(names.rotulos, "-proba", sep="")
     names(y_probas) = proba
     
-    all.predictions = cbind(y_preds, y_trues, y_probas)
+    all.predictions = cbind(y_preds_2, y_trues, y_probas)
     
     setwd(FolderSplit)
     write.csv(all.predictions, "folder-predictions.csv", row.names = FALSE)
@@ -327,7 +334,7 @@ evaluate.global.python <- function(ds,
     ####################################################################################
     # cat("\nAbrindo pred and true")
     setwd(FolderSplit)
-    y_pred = data.frame(read.csv("y_pred.csv"))
+    y_pred = data.frame(read.csv("y_predict.csv"))
     y_true = data.frame(read.csv("y_true.csv"))
     
     # cat("\nConvertendo em numerico")
@@ -450,9 +457,6 @@ gather.eval.global.python <- function(ds,
     names(confMat) = c("Measures", "Fold")
     confMatFinal = cbind(confMatFinal, confMat$Fold) 
     folds[f] = paste("Fold-", f, sep="")
-    setwd(folderSplit)
-    unlink("y_predict.csv", recursive = TRUE)
-    unlink("y_true.csv", recursive = TRUE)
     
     setwd(folderSplit)
     
