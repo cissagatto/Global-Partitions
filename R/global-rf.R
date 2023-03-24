@@ -220,16 +220,28 @@ execute.global.python <- function(parameters,
     setwd(FolderSplit)
     y_preds = data.frame(read.csv("y_pred.csv"))
     y_trues = data.frame(read.csv("y_true.csv"))
-    y_probas = data.frame(read.csv("y_proba_1.csv"))     
-
+    y_probas = data.frame(read.csv("y_proba.csv"))     
+    
     #####################################################################
-    nomes.rotulos = colnames(y_trues)
-    names(y_probas) = nomes.rotulos
+    nomes = colnames(y_probas)
+    
+    nomes.2 = c("")
+    m = ncol(y_probas)/2
+    a = 1
+    while(a<=m){
+      nomes.2[a] = paste("prob_", a-1, "_1", sep="")
+      a = a + 1
+    }
+    
+    probabilidades = y_probas %>% select(all_of(nomes.2))
+    names(probabilidades) = colnames(y_trues)
+    write.csv(probabilidades, "y_proba_1.csv", row.names = FALSE)
+    
     
     #####################################################################
     cat("\n\tUTIML Threshold\n")
-    y_preds_2 <- data.frame(as.matrix(fixed_threshold(y_probas, 
-                                                    threshold = 0.5)))
+    y_preds_2 <- data.frame(as.matrix(fixed_threshold(probabilidades, 
+                                                      threshold = 0.5)))
     
     setwd(FolderSplit)
     write.csv(y_preds_2, "y_predict.csv", row.names = FALSE)
@@ -238,31 +250,31 @@ execute.global.python <- function(parameters,
     #####################################################################
     cat("\nPlot ROC curve")
     roc.curva(predictions = y_preds_2,
-              probabilities = y_probas,
+              probabilities = probabilidades,
               test = mldr.teste,
               Folder = FolderSplit)
 
 
     ##############################################
     cat("\nInformações das predições")
-    predictions.information(nomes.rotulos=nomes.rotulos, 
-                            proba = y_probas, 
+    predictions.information(nomes.rotulos=names.rotulos, 
+                            proba = probabilidades, 
                             preds = y_preds_2, 
                             trues = y_trues, 
                             folder = FolderSplit)
     
     #####################################################################
     cat("\nSave original and pruned predictions")
-    pred.o = paste(colnames(y_preds_2), "-pred", sep="")
+    pred.o = paste(names.rotulos, "-pred", sep="")
     names(y_preds_2) = pred.o
-    
-    true.labels = paste(colnames(y_trues), "-true", sep="")
+     
+    true.labels = paste(names.rotulos, "-true", sep="")
     names(y_trues) = true.labels
     
     proba = paste(names.rotulos, "-proba", sep="")
-    names(y_probas) = proba
+    names(probabilidades) = proba
     
-    all.predictions = cbind(y_preds_2, y_trues, y_probas)
+    all.predictions = cbind(probabilidades, y_preds_2, y_trues)
     
     setwd(FolderSplit)
     write.csv(all.predictions, "folder-predictions.csv", row.names = FALSE)

@@ -117,7 +117,7 @@ if __name__ == '__main__':
           res.columns = [f'prob_{n}_0'] 
           res[f'prob_{n}_1'] = 0 
         else:
-          res.columns = [f'prob_e{n}_0', f'prob_e{n}_1']
+          res.columns = [f'prob_{n}_0', f'prob_{n}_1']
         
         ldf.append(res)
         res2 = res.iloc[:, :1] # atributos
@@ -132,8 +132,8 @@ if __name__ == '__main__':
     final = pd.concat(ldf, axis=1)
     final.to_csv(probaname1, index=False)
     
-    final2 = pd.concat(ldf2, axis=1)
-    final2.to_csv(probaname2, index=False)
+    #final2 = pd.concat(ldf2, axis=1)
+    #final2.to_csv(probaname2, index=False)
 
     y_true = pd.read_csv(true)
     y_pred = pd.read_csv(pred)
