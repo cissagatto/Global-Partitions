@@ -93,10 +93,10 @@ run.rf <- function(parameters,
   
   
   
-  # cat("\n\n#################################################")
-  #   cat("\n# RUN: Properties                               #")
-  #   cat("\n#################################################\n\n")
-  # time.properties = system.time(properties.datasets(parameters))
+  cat("\n\n#################################################")
+    cat("\n# RUN: Properties                               #")
+    cat("\n#################################################\n\n")
+  time.properties = system.time(properties.datasets(parameters))
   
   
   
@@ -134,7 +134,7 @@ run.rf <- function(parameters,
   cat("\n\n###########################################################")
     cat("\n# RUN: Save Runtime                                       #")
     cat("\n###########################################################\n\n")
-  RunTimeGlobal = rbind(time.gather.files, 
+  RunTimeGlobal = rbind(time.gather.files, time.properties,
                         time.execute, time.evaluate, 
                         time.gather.evaluate)
   setwd(diretorios$folderGlobal)
