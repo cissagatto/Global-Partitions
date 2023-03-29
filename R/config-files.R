@@ -1,4 +1,6 @@
+# clean
 rm(list=ls())
+
 
 ##############################################################################
 # GLOBAL PARTITIONS                                                          #
@@ -12,26 +14,39 @@ rm(list=ls())
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General   #
 # Public License for more details.                                           #
 #                                                                            #
-# Elaine Cecilia Gatto | Prof. Dr. Ricardo Cerri | Prof. Dr. Mauri           #
-# Ferrandin | Prof. Dr. Celine Vens | PhD Felipe Nakano Kenji                #
+# 1 - PhD Elaine Cecilia Gatto | Prof PhD Ricardo Cerri                      #
+# 2 - Prof PhD Mauri Ferrandin                                               #
+# 3 - Prof PhD Celine Vens | PhD Felipe Nakano Kenji                         #
+# 4 - Prof PhD Jesse Read                                                    #
 #                                                                            #
-# Federal University of São Carlos - UFSCar - https://www2.ufscar.br         #
-# Campus São Carlos - Computer Department - DC - https://site.dc.ufscar.br   #
+# 1 = Federal University of São Carlos - UFSCar - https://www2.ufscar.br     #
+# Campus São Carlos | Computer Department - DC - https://site.dc.ufscar.br | #
 # Post Graduate Program in Computer Science - PPGCC                          # 
-# http://ppgcc.dc.ufscar.br - Bioinformatics and Machine Learning Group      #
-# BIOMAL - http://www.biomal.ufscar.br                                       #
+# http://ppgcc.dc.ufscar.br | Bioinformatics and Machine Learning Group      #
+# BIOMAL - http://www.biomal.ufscar.br                                       # 
 #                                                                            #
-# Katholieke Universiteit Leuven Campus Kulak Kortrijk Belgium               #
+# 2 - Federal University of Santa Catarina Campus Blumenau - UFSC            #
+# https://ufsc.br/                                                           #
+#                                                                            #
+# 3 - Katholieke Universiteit Leuven Campus Kulak Kortrijk Belgium           #
 # Medicine Department - https://kulak.kuleuven.be/                           #
 # https://kulak.kuleuven.be/nl/over_kulak/faculteiten/geneeskunde            #
 #                                                                            #
+# 4 - Ecole Polytechnique | Institut Polytechnique de Paris | 1 rue Honoré   #
+# d’Estienne d’Orves - 91120 - Palaiseau - FRANCE                            #
+#                                                                            #
 ##############################################################################
 
+
+
+
 ###############################################################################
-# SET WORKSAPCE                                                               #
+#
 ###############################################################################
 FolderRoot = "~/Global-Partitions"
 FolderScripts = "~/Global-Partitions/R"
+
+
 
 
 ###############################################################################
@@ -51,15 +66,15 @@ n = nrow(datasets)
 ###############################################################################
 # CREATING FOLDER TO SAVE CONFIG FILES                                        #
 ###############################################################################
-FolderCF = paste(FolderRoot, "/config-files-ufscar", sep="")
+FolderCF = paste(FolderRoot, "/config-files-apptainer", sep="")
 if(dir.exists(FolderCF)==FALSE){dir.create(FolderCF)}
 
 
 ###############################################################################
 # QUAL Implementation USAR
 ###############################################################################
-Implementation.1 = c("rf", "clus")
-Implementation.2 = c("rf", "c")
+Implementation.1 = c("rf")
+Implementation.2 = c("rf")
 
 
 ###############################################################################
@@ -99,16 +114,16 @@ while(w<=length(Implementation.1)){
     # write("Dataset_Path, /home/u704616/Datasets", 
     #      file = output.file, append = TRUE)
     
-    # write("Dataset_Path, /home/biomal/Datasets", 
-    #      file = output.file, append = TRUE)
-    
      write("Dataset_Path, /Datasets", 
           file = output.file, append = TRUE)
+    
+    # write("Dataset_Path, /Datasets", 
+    #      file = output.file, append = TRUE)
     
     name = paste("g", Implementation.2[w], "-", ds$Name, sep = "")
     
     # directory name - "/scratch/eg-3s-bbc1000"
-     temp.name = paste("/tmp/", name, sep = "")
+    temp.name = paste("/tmp/", name, sep = "")
     # temp.name = paste("/dev/shm/", name, sep = "")
     
     # Absolute path to the folder where temporary processing will be done. 

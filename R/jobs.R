@@ -1,4 +1,6 @@
+# clean
 rm(list=ls())
+
 
 ##############################################################################
 # GLOBAL PARTITIONS                                                          #
@@ -12,27 +14,37 @@ rm(list=ls())
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General   #
 # Public License for more details.                                           #
 #                                                                            #
-# Elaine Cecilia Gatto | Prof. Dr. Ricardo Cerri | Prof. Dr. Mauri           #
-# Ferrandin | Prof. Dr. Celine Vens | PhD Felipe Nakano Kenji                #
+# 1 - PhD Elaine Cecilia Gatto | Prof PhD Ricardo Cerri                      #
+# 2 - Prof PhD Mauri Ferrandin                                               #
+# 3 - Prof PhD Celine Vens | PhD Felipe Nakano Kenji                         #
+# 4 - Prof PhD Jesse Read                                                    #
 #                                                                            #
-# Federal University of São Carlos - UFSCar - https://www2.ufscar.br         #
-# Campus São Carlos - Computer Department - DC - https://site.dc.ufscar.br   #
+# 1 = Federal University of São Carlos - UFSCar - https://www2.ufscar.br     #
+# Campus São Carlos | Computer Department - DC - https://site.dc.ufscar.br | #
 # Post Graduate Program in Computer Science - PPGCC                          # 
-# http://ppgcc.dc.ufscar.br - Bioinformatics and Machine Learning Group      #
-# BIOMAL - http://www.biomal.ufscar.br                                       #
+# http://ppgcc.dc.ufscar.br | Bioinformatics and Machine Learning Group      #
+# BIOMAL - http://www.biomal.ufscar.br                                       # 
 #                                                                            #
-# Katholieke Universiteit Leuven Campus Kulak Kortrijk Belgium               #
+# 2 - Federal University of Santa Catarina Campus Blumenau - UFSC            #
+# https://ufsc.br/                                                           #
+#                                                                            #
+# 3 - Katholieke Universiteit Leuven Campus Kulak Kortrijk Belgium           #
 # Medicine Department - https://kulak.kuleuven.be/                           #
 # https://kulak.kuleuven.be/nl/over_kulak/faculteiten/geneeskunde            #
 #                                                                            #
+# 4 - Ecole Polytechnique | Institut Polytechnique de Paris | 1 rue Honoré   #
+# d’Estienne d’Orves - 91120 - Palaiseau - FRANCE                            #
+#                                                                            #
 ##############################################################################
 
+
+
+
 ###############################################################################
-# SET WORKSAPCE                                                               #
+#
 ###############################################################################
 FolderRoot = "~/Global-Partitions"
 FolderScripts = "~/Global-Partitions/R"
-
 
 ###############################################################################
 # LOAD LIBRARY/PACKAGE                                                        #
@@ -53,7 +65,7 @@ n = nrow(datasets)
 FolderJob = paste(FolderRoot, "/jobs", sep = "")
 if (dir.exists(FolderJob) == FALSE) {dir.create(FolderJob)}
 
-FolderCF = "/Global-Partitions/config-files-ufscar"
+FolderCF = "~/Global-Partitions/config-files-ufscar"
 
 
 ###############################################################################
@@ -320,7 +332,7 @@ while(w<=length(pacote)){
     write(" ", file = output.file, append = TRUE)
     write("echo EXECUTANDO", file = output.file, append = TRUE)
     str = paste("singularity run --app Rscript instance://EXPG", a,
-                " /Global-Partitions/R/global.R \"",
+                " ~/Global-Partitions/R/global.R \"",
                 config.file.name, "\"", sep="")
     write(str, file = output.file, append = TRUE)
     

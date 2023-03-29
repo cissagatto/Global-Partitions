@@ -10,20 +10,30 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General   #
 # Public License for more details.                                           #
 #                                                                            #
-# Elaine Cecilia Gatto | Prof. Dr. Ricardo Cerri | Prof. Dr. Mauri           #
-# Ferrandin | Prof. Dr. Celine Vens | PhD Felipe Nakano Kenji                #
+# 1 - PhD Elaine Cecilia Gatto | Prof PhD Ricardo Cerri                      #
+# 2 - Prof PhD Mauri Ferrandin                                               #
+# 3 - Prof PhD Celine Vens | PhD Felipe Nakano Kenji                         #
+# 4 - Prof PhD Jesse Read                                                    #
 #                                                                            #
-# Federal University of São Carlos - UFSCar - https://www2.ufscar.br         #
-# Campus São Carlos - Computer Department - DC - https://site.dc.ufscar.br   #
+# 1 = Federal University of São Carlos - UFSCar - https://www2.ufscar.br     #
+# Campus São Carlos | Computer Department - DC - https://site.dc.ufscar.br | #
 # Post Graduate Program in Computer Science - PPGCC                          # 
-# http://ppgcc.dc.ufscar.br - Bioinformatics and Machine Learning Group      #
-# BIOMAL - http://www.biomal.ufscar.br                                       #
+# http://ppgcc.dc.ufscar.br | Bioinformatics and Machine Learning Group      #
+# BIOMAL - http://www.biomal.ufscar.br                                       # 
 #                                                                            #
-# Katholieke Universiteit Leuven Campus Kulak Kortrijk Belgium               #
+# 2 - Federal University of Santa Catarina Campus Blumenau - UFSC            #
+# https://ufsc.br/                                                           #
+#                                                                            #
+# 3 - Katholieke Universiteit Leuven Campus Kulak Kortrijk Belgium           #
 # Medicine Department - https://kulak.kuleuven.be/                           #
 # https://kulak.kuleuven.be/nl/over_kulak/faculteiten/geneeskunde            #
 #                                                                            #
+# 4 - Ecole Polytechnique | Institut Polytechnique de Paris | 1 rue Honoré   #
+# d’Estienne d’Orves - 91120 - Palaiseau - FRANCE                            #
+#                                                                            #
 ##############################################################################
+
+
 
 ###############################################################################
 # SET WORKSAPCE                                                               #
@@ -34,26 +44,14 @@ FolderScripts = "~/Global-Partitions/R"
 
 
 ###########################################################################
-# Runs for all datasets listed in the "datasets.csv" file                                        #
-# n_dataset: number of the dataset in the "datasets.csv"                                         #
-# number_cores: number of cores to paralell                                                      #
-# number_folds: number of folds for cross validation                                             # 
-# delete: if you want, or not, to delete all folders and files generated                         #
-######################################################################
-run.rf <- function(parameters, 
-                   ds, 
-                   dataset_name,
-                   number_dataset, 
-                   number_cores, 
-                   number_folds, 
-                   folderResults){
+#
+###########################################################################
+run.rf <- function(parameters){
   
   setwd(FolderScripts)
   source("global-rf.R")
   
-  diretorios = directories(dataset_name, folderResults)
-  
-  if(parameters$Number.Cores == 0){
+  if(parameters$Config.File$Number.Cores == 0){
     
     cat("\n\n##########################################################")
     cat("\n# Zero is a disallowed value for number_cores. Please      #")
@@ -62,82 +60,76 @@ run.rf <- function(parameters,
     
   } else {
     
-    cl <- parallel::makeCluster(parameters$Number.Cores)
+    cl <- parallel::makeCluster(parameters$Config.File$Number.Cores)
     doParallel::registerDoParallel(cl)
     print(cl)
     
-    if(parameters$Number.Cores==1){
+    if(parameters$Config.File$Number.Cores==1){
       cat("\n\n########################################################")
       cat("\n# Running Sequentially!                                #")
       cat("\n########################################################\n\n")
     } else {
       cat("\n\n############################################################")
-      cat("\n# Running in parallel with ", parameters$Number.Cores, " cores!       #")
+      cat("\n# Running in parallel with ", parameters$Config.File$Number.Cores, " cores! #")
       cat("\n############################################################\n\n")
     }
   }
   
+  
   cl = cl
+  
   retorno = list()
+  
+  
+  cat("\n\n##################################################")
+    cat("\n# RUN: Names Labels                              #")
+    cat("\n##################################################\n\n")
+  name.file = paste(parameters$Directories$FolderNamesLabels, "/",
+                    parameters$Config.File$Dataset.Name,
+                    "-NamesLabels.csv", sep="")
+  labels.names = data.frame(read.csv(name.file))
+  names(labels.names) = c("Index", "Labels")
+  parameters$Names.Labels = labels.names
   
   
   cat("\n\n####################################################")
     cat("\n# RUN: Gather Files                                #")
     cat("\n####################################################\n\n")
-  time.gather.files = system.time(gather.files.python(ds, 
-                                                      dataset_name,
-                                                      number_dataset, 
-                                                      number_cores, 
-                                                      number_folds, 
-                                                      folderResults))
+  time.gather.files = system.time(gather.files.python(parameters))
   
   
   
-  cat("\n\n#################################################")
-    cat("\n# RUN: Properties                               #")
-    cat("\n#################################################\n\n")
-  time.properties = system.time(properties.datasets(parameters))
+  # cat("\n\n#################################################")
+  #   cat("\n# RUN: Properties                               #")
+  #   cat("\n#################################################\n\n")
+  # time.properties = system.time(properties.datasets(parameters))
   
   
   
   cat("\n\n####################################################")
     cat("\n# RUN: Execute Random Forests                      #")
     cat("\n####################################################\n\n")
-  time.execute = system.time(execute.global.python(parameters,
-                                                   ds, 
-                                                   dataset_name, 
-                                                   number_folds,
-                                                   number_cores, 
-                                                   folderResults))
+  time.execute = system.time(execute.global.python(parameters))
   
   
   cat("\n\n##########################################################")
   cat("\n# RUN: Evaluate                                          #")
   cat("\n##########################################################\n\n")
-  time.evaluate = system.time(evaluate.global.python(ds, 
-                                                     dataset_name, 
-                                                     number_folds,
-                                                     number_cores, 
-                                                     folderResults))
+  time.evaluate = system.time(evaluate.global.python(parameters))
   
   
   cat("\n\n##########################################################")
     cat("\n# RUN: Gather Evaluated Measures                         #")
     cat("\n##########################################################\n\n")
-  time.gather.evaluate = system.time(gather.eval.global.python(ds, 
-                                                               dataset_name, 
-                                                               number_folds,
-                                                               number_cores, 
-                                                               folderResults))
+  time.gather.evaluate = system.time(gather.eval.global.python(parameters))
   
   
   cat("\n\n###########################################################")
     cat("\n# RUN: Save Runtime                                       #")
     cat("\n###########################################################\n\n")
-  RunTimeGlobal = rbind(time.gather.files, time.properties,
-                        time.execute, time.evaluate, 
+  RunTimeGlobal = rbind(time.gather.files, time.execute, time.evaluate, 
                         time.gather.evaluate)
-  setwd(diretorios$folderGlobal)
+  setwd(parameters$Directories$FolderGlobal)
   write.csv(RunTimeGlobal, "Run-RunTime.csv")
   
   
@@ -149,7 +141,7 @@ run.rf <- function(parameters,
 }
 
 
-##################################################################################################
-# Please, any errors, contact us: elainececiliagatto@gmail.com                                   #
-# Thank you very much!                                                                           #
-##################################################################################################
+###############################################################################
+# Please, any errors, contact us: elainececiliagatto@gmail.com                #
+# Thank you very much!                                                        #
+###############################################################################

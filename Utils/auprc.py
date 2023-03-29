@@ -34,35 +34,36 @@
 ##############################################################################
 
 
+import sys
+from sklearn.metrics import average_precision_score
+import matplotlib.pyplot as plt
+import pandas as pd
 
-###############################################################################
-# SET WORKSAPCE                                                               #
-###############################################################################
-FolderRoot = "~/Global-Partitions"
-FolderScripts = "~/Global-Partitions/R"
+y_true = pd.read_csv(sys.argv[1])
+y_proba = pd.read_csv(sys.argv[2])
+y_pred_bin = pd.read_csv(sys.argv[3])
+name_proba = sys.argv[4]
+name_bin = sys.argv[5]
 
+# y_true = pd.read_csv("/dev/shm/grf-GpositiveGO/Global/Split-1/y_true.csv")
+# y_proba = pd.read_csv("/dev/shm/grf-GpositiveGO/Global/Split-1/y_proba_1.csv")
+# y_pred_bin = pd.read_csv("/dev/shm/grf-GpositiveGO/Global/Split-1/y_pred_bin.csv")
+# name_proba= "/dev/shm/grf-GpositiveGO/Global/Split-1/auprc_proba.csv"
+# name_bin = "/dev/shm/grf-GpositiveGO/Global/Split-1/auprc_bin.csv"
 
-##############################################################################
-# LOAD EXTERNAL LIBRARIES                                                    #
-##############################################################################
+# usando probabilidades
+micro_proba = average_precision_score(y_true, y_proba, average = "micro")
+macro_proba = average_precision_score(y_true, y_proba, average = "macro")
 
-library("mldr", quietly = TRUE) 
-library("readr", quietly = TRUE) 
-library("foreign", quietly = TRUE) 
-library("stringr", quietly = TRUE) 
-library("plyr", quietly = TRUE) 
-library("dplyr", quietly = TRUE) 
-library("reshape2", quietly = TRUE) 
-library("AggregateR", quietly = TRUE) 
-library("parallel", quietly = TRUE) 
-library("utiml", quietly = TRUE)
-library("RWeka", quietly = TRUE) 
-library("rJava", quietly = TRUE) 
-library("foreach", quietly = TRUE) 
-library("doParallel", quietly = TRUE)
+# usando predições binárias
+# micro_bin = average_precision_score(y_true, y_pred_bin, average = "micro")
+# macro_bin = average_precision_score(y_true, y_pred_bin, average = "macro")
 
+res_proba = pd.DataFrame([micro_proba, macro_proba]).T
+res_proba .columns = ["Micro-AUPRC", "Macro-AUPRC"]
+res_proba.to_csv(name_proba, index=False)
 
-###############################################################################
-# Please, any errors, contact us: elainececiliagatto@gmail.com                #
-# Thank you very much!                                                        #
-###############################################################################
+# res_bin = pd.DataFrame([micro_bin, macro_bin]).T
+# res_bin.columns = ["Micro-AUPRC", "Macro-AUPRC"]
+# res_bin.to_csv(name_bin, index=False)
+

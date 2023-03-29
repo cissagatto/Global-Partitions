@@ -10,20 +10,30 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General   #
 # Public License for more details.                                           #
 #                                                                            #
-# Elaine Cecilia Gatto | Prof. Dr. Ricardo Cerri | Prof. Dr. Mauri           #
-# Ferrandin | Prof. Dr. Celine Vens | PhD Felipe Nakano Kenji                #
+# 1 - PhD Elaine Cecilia Gatto | Prof PhD Ricardo Cerri                      #
+# 2 - Prof PhD Mauri Ferrandin                                               #
+# 3 - Prof PhD Celine Vens | PhD Felipe Nakano Kenji                         #
+# 4 - Prof PhD Jesse Read                                                    #
 #                                                                            #
-# Federal University of São Carlos - UFSCar - https://www2.ufscar.br         #
-# Campus São Carlos - Computer Department - DC - https://site.dc.ufscar.br   #
+# 1 = Federal University of São Carlos - UFSCar - https://www2.ufscar.br     #
+# Campus São Carlos | Computer Department - DC - https://site.dc.ufscar.br | #
 # Post Graduate Program in Computer Science - PPGCC                          # 
-# http://ppgcc.dc.ufscar.br - Bioinformatics and Machine Learning Group      #
-# BIOMAL - http://www.biomal.ufscar.br                                       #
+# http://ppgcc.dc.ufscar.br | Bioinformatics and Machine Learning Group      #
+# BIOMAL - http://www.biomal.ufscar.br                                       # 
 #                                                                            #
-# Katholieke Universiteit Leuven Campus Kulak Kortrijk Belgium               #
+# 2 - Federal University of Santa Catarina Campus Blumenau - UFSC            #
+# https://ufsc.br/                                                           #
+#                                                                            #
+# 3 - Katholieke Universiteit Leuven Campus Kulak Kortrijk Belgium           #
 # Medicine Department - https://kulak.kuleuven.be/                           #
 # https://kulak.kuleuven.be/nl/over_kulak/faculteiten/geneeskunde            #
 #                                                                            #
+# 4 - Ecole Polytechnique | Institut Polytechnique de Paris | 1 rue Honoré   #
+# d’Estienne d’Orves - 91120 - Palaiseau - FRANCE                            #
+#                                                                            #
 ##############################################################################
+
+
 
 ###############################################################################
 # SET WORKSAPCE                                                               #
@@ -32,7 +42,10 @@ FolderRoot = "~/Global-Partitions"
 FolderScripts = "~/Global-Partitions/R"
 
 
-############################################################################
+
+###############################################################################
+#
+###############################################################################
 converteArff <- function(arg1, arg2, arg3, FolderUtils){  
   str = paste("java -jar ", FolderUtils,  "/R_csv_2_arff.jar ", 
               arg1, " ", arg2, " ", arg3, sep="")
@@ -41,7 +54,9 @@ converteArff <- function(arg1, arg2, arg3, FolderUtils){
 }
 
 
-
+###############################################################################
+#
+###############################################################################
 properties.datasets <- function(parameters){
   
   fold = c(0)
@@ -421,20 +436,13 @@ properties.datasets <- function(parameters){
 }
 
 
-##################################################################################################
-# FUNCTION DIRECTORIES                                                                           #
-#   Objective:                                                                                   #
-#      Creates all the necessary folders for the project. These are the main folders that must   # 
-#      be created and used before the script starts to run                                       #  
-#   Parameters:                                                                                  #
-#      None                                                                                      #
-#   Return:                                                                                      #
-#      All path directories                                                                      #
-##################################################################################################
-directories <- function(dataset_name, folderResults){
+###############################################################################
+#
+###############################################################################
+directories <- function(parameters){
   
   FolderRoot = "~/Global-Partitions"
-  FolderScripts = paste(FolderRoot, "/R", sep="")
+  FolderScripts = "~/Global-Partitions/R"
   
   retorno = list()
   
@@ -444,7 +452,7 @@ directories <- function(dataset_name, folderResults){
   # execution. Other folder is used to store definitely the results.          #
   # Example: "/dev/shm/result"; "/scratch/result"; "/tmp/result"              #
   #############################################################################
-  if(dir.exists(folderResults) == TRUE){
+  if(dir.exists(parameters$Config.File$Folder.Results) == TRUE){
     setwd(folderResults)
     dir_folderResults = dir(folderResults)
     n_folderResults = length(dir_folderResults)
@@ -454,6 +462,7 @@ directories <- function(dataset_name, folderResults){
     dir_folderResults = dir(folderResults)
     n_folderResults = length(dir_folderResults)
   }
+  retorno$FolderResults = parameters$Config.File$Folder.Results
   
   
   
@@ -471,14 +480,12 @@ directories <- function(dataset_name, folderResults){
     dir_folderUtils = dir(folderUtils)
     n_folderUtils = length(dir_folderUtils)
   }
+  retorno$FolderUtils = folderUtils
   
   
-  
-  #############################################################################
-  # VALIDATION FOLDER: "/dev/shm/results/Validation"                          #
-  #         Folder that will temporarily store the files and folders needed   #
-  #     for code processing in the validation phase                           #
-  #############################################################################
+  ###############################################################################
+  #
+  ###############################################################################
   folderGlobal = paste(folderResults, "/Global", sep="")
   if(dir.exists(folderGlobal) == TRUE){
     setwd(folderGlobal)
@@ -490,12 +497,12 @@ directories <- function(dataset_name, folderResults){
     dir_folderGlobal = dir(folderGlobal)
     n_folderGlobal = length(dir_folderGlobal)
   }
+  retorno$FolderGlobal = folderGlobal
   
   
-  #############################################################################
-  # DATASET FOLDER: "/dev/shm/results/Dataset"                                #
-  #         Folder that will temporarily store the dataset files and folders  #
-  #############################################################################
+  ###############################################################################
+  #
+  ###############################################################################
   folderDataset = paste(folderResults, "/Dataset", sep="")
   if(dir.exists(folderDataset) == TRUE){
     setwd(folderDataset)
@@ -507,13 +514,12 @@ directories <- function(dataset_name, folderResults){
     dir_folderDataset = dir(folderDataset)
     n_folderDataset = length(dir_folderDataset)
   }
+  retorno$FolderDataset = folderDataset
   
   
-  #############################################################################
-  # SPECIFIC DATASET FOLDER:                                                  #
-  #         "/dev/shm/results/Dataset/GpositiveGO"                            #
-  #         Folder that will temporarily store the dataset files and folders  #
-  #############################################################################
+  ###############################################################################
+  #
+  ###############################################################################
   folderDatasetX = paste(folderDataset, "/", dataset_name, sep="")
   if(dir.exists(folderDatasetX) == TRUE){
     setwd(folderDatasetX)
@@ -525,12 +531,12 @@ directories <- function(dataset_name, folderResults){
     dir_folderDatasetX = dir(folderDatasetX)
     n_folderDatasetX = length(dir_folderDatasetX)
   }
+  retorno$FolderDatasetX = folderDatasetX
   
-  #############################################################################
-  # CROSS VALIDATION FOLDER:                                                  #
-  #         "/dev/shm/results/Dataset/GpositiveGO/CrossValidation"            #
-  #         Folder that will temporarily store the dataset files and folders  #
-  #############################################################################
+  
+  ###############################################################################
+  #
+  ###############################################################################
   folderCV = paste(folderDatasetX, "/CrossValidation", sep="")
   if(dir.exists(folderCV) == TRUE){
     setwd(folderCV)
@@ -542,12 +548,12 @@ directories <- function(dataset_name, folderResults){
     dir_folderCV = dir(folderCV)
     n_folderCV = length(dir_folderCV)
   }
+  retorno$FolderCV = folderCV
   
-  #############################################################################
-  # CROSS VALIDATION TRAIN FILES/FOLDER:                                      #
-  #         "/dev/shm/results/Dataset/GpositiveGO/CrossValidation/Tr"         #
-  #         Folder that will temporarily store the dataset files and folders  #
-  #############################################################################
+  
+  ###############################################################################
+  #
+  ###############################################################################
   folderCVTR = paste(folderCV, "/Tr", sep="")
   if(dir.exists(folderCVTR) == TRUE){
     setwd(folderCVTR)
@@ -559,12 +565,12 @@ directories <- function(dataset_name, folderResults){
     dir_folderCVTR = dir(folderCVTR)
     n_folderCVTR = length(dir_folderCVTR)
   }
+  retorno$FolderCVTR = folderCVTR
   
-  #############################################################################
-  # CROSS VALIDATION TEST FILES/FOLDER:                                       #
-  #          "/dev/shm/results/Dataset/GpositiveGO/CrossValidation/Ts"        #
-  #         Folder that will temporarily store the dataset files and folders  #
-  #############################################################################
+  
+  ###############################################################################
+  #
+  ###############################################################################
   folderCVTS = paste(folderCV, "/Ts", sep="")
   if(dir.exists(folderCVTS) == TRUE){
     setwd(folderCVTS)
@@ -576,12 +582,12 @@ directories <- function(dataset_name, folderResults){
     dir_folderCVTS = dir(folderCVTS)
     n_folderCVTS = length(dir_folderCVTS)
   }
+  retorno$FolderCVTS = folderCVTS
   
-  #############################################################################
-  # CROSS VALIDATION VALIDATION FILES/FOLDER:                                 #
-  #         "/dev/shm/results/Dataset/GpositiveGO/CrossValidation/Vl"         #
-  #         Folder that will temporarily store the dataset files and folders  #
-  #############################################################################
+  
+  ###############################################################################
+  #
+  ###############################################################################
   folderCVVL = paste(folderCV, "/Vl", sep="")
   if(dir.exists(folderCVVL) == TRUE){
     setwd(folderCVVL)
@@ -593,12 +599,11 @@ directories <- function(dataset_name, folderResults){
     dir_folderCVVL = dir(folderCVVL)
     n_folderCVVL = length(dir_folderCVVL)
   }
+  retorno$FolderCVVL = folderCVVL
   
-  #############################################################################
-  # CROSS VALIDATION LABEL SPACE FILES/FOLDER:                                #
-  #         "/dev/shm/results/Dataset/GpositiveGO/LabelSpace"                 #
-  #         Folder that will temporarily store the dataset files and folders  #
-  #############################################################################
+  ###############################################################################
+  #
+  ###############################################################################
   folderLabelSpace = paste(folderDatasetX, "/LabelSpace", sep="")
   if(dir.exists(folderLabelSpace) == TRUE){
     setwd(folderLabelSpace)
@@ -610,12 +615,12 @@ directories <- function(dataset_name, folderResults){
     dir_folderLabelSpace = dir(folderLabelSpace)
     n_folderLabelSpace = length(dir_folderLabelSpace)
   }
+  retorno$FolderLabelSpace = folderLabelSpace
   
-  #############################################################################
-  # CROSS VALIDATION LABELS NAMES FILES/FOLDER:                               #
-  #        "/dev/shm/results/Dataset/GpositiveGO/NamesLabels"                 #
-  #         Folder that will temporarily store the dataset files and folders  #
-  #############################################################################
+  
+  ###############################################################################
+  #
+  ###############################################################################
   folderNamesLabels = paste(folderDatasetX, "/NamesLabels", sep="")
   if(dir.exists(folderNamesLabels) == TRUE){
     setwd(folderNamesLabels)
@@ -627,47 +632,10 @@ directories <- function(dataset_name, folderResults){
     dir_folderNamesLabels = dir(folderNamesLabels)
     n_folderNamesLabels = length(dir_folderNamesLabels)
   }
+  retorno$FolderNamesLabels = folderNamesLabels
   
   
-  # return folders
-  retorno$folderUtils = folderUtils
-  retorno$folderGlobal = folderGlobal
-  retorno$folderResults = folderResults
-  retorno$folderDataset = folderDataset
-  retorno$folderDatasetX = folderDatasetX
-  retorno$folderCV = folderCV
-  retorno$folderCVTR = folderCVTR
-  retorno$folderCVTS = folderCVTS
-  retorno$folderCVVL = folderCVVL
-  retorno$folderLabelSpace = folderLabelSpace
-  retorno$folderNamesLabels = folderNamesLabels
-  
-  # return folder contents
-  retorno$dir_folderUtils = dir_folderUtils
-  retorno$dir_folderGlobal = dir_folderGlobal
-  retorno$dir_folderResults = dir_folderResults
-  retorno$dir_folderDataset = dir_folderDataset
-  retorno$dir_folderDatasetX = dir_folderDatasetX
-  retorno$dir_folderCV = dir_folderCV
-  retorno$dir_folderCVTR = dir_folderCVTR
-  retorno$dir_folderCVTS = dir_folderCVTS
-  retorno$dir_folderCVVL = dir_folderCVVL
-  retorno$dir_folderLabelSpace = dir_folderLabelSpace
-  retorno$dir_folderNamesLabels = dir_folderNamesLabels
-  
-  # return of the number of objects inside the folder
-  retorno$n_folderUtils = n_folderUtils
-  retorno$n_folderGlobal = n_folderGlobal
-  retorno$n_folderResults = n_folderResults
-  retorno$n_folderDataset = n_folderDataset
-  retorno$n_folderDatasetX = n_folderDatasetX
-  retorno$n_folderCV = n_folderCV
-  retorno$n_folderCVTR = n_folderCVTR
-  retorno$n_folderCVTS = n_folderCVTS
-  retorno$n_folderCVVL = n_folderCVVL
-  retorno$n_folderLabelSpace = n_folderLabelSpace
-  retorno$n_folderNamesLabels = n_folderNamesLabels
-  
+  ############################################################################
   return(retorno)
   gc()
   
@@ -675,15 +643,9 @@ directories <- function(dataset_name, folderResults){
 
 
 
-##################################################################################################
-# FUNCTION INFO DATA SET                                                                         #
-#  Objective                                                                                     #
-#     Gets the information that is in the "datasets.csv" file.                                    #  
-#  Parameters                                                                                    #
-#     dataset: the specific dataset                                                              #
-#  Return                                                                                        #
-#     Everything in the spreadsheet                                                              #
-##################################################################################################
+##############################################################################
+# 
+##############################################################################
 infoDataSet <- function(dataset){
   retorno = list()
   retorno$id = dataset$ID
@@ -708,16 +670,18 @@ infoDataSet <- function(dataset){
 }
 
 
-
-roc.curva <- function(predictions, probabilities, test, Folder){
+##############################################################################
+# 
+##############################################################################
+roc.curva <- function(pred_bin, pred_proba, test, f, Folder){
   
   #####################################################################
-  y_pred2 = sapply(predictions, function(x) as.numeric(as.character(x)))
-  res.bin = mldr_evaluate(test, y_pred2)
+  pred_bin = sapply(pred_bin, function(x) as.numeric(as.character(x)))
+  res.bin = mldr_evaluate(test, pred_bin)
   
   #####################################################################
-  y_proba2 = sapply(probabilities, function(x) as.numeric(as.character(x)))
-  res.proba = mldr_evaluate(test, y_proba2)
+  pred_proba = sapply(pred_proba, function(x) as.numeric(as.character(x)))
+  res.proba = mldr_evaluate(test, pred_proba)
   
   ###############################################################
   # PLOTANDO ROC CURVE
@@ -727,7 +691,7 @@ roc.curva <- function(predictions, probabilities, test, Folder){
              print.thres.cex=0.7, grid = TRUE, identity=TRUE,
              axes = TRUE, legacy.axes = TRUE, 
              identity.col = "#a91e0e", col = "#1161d5",
-             main = "binary predictions"))
+             main = paste("fold ", f," binary predictions")))
   dev.off()
   cat("\n")
   
@@ -739,23 +703,23 @@ roc.curva <- function(predictions, probabilities, test, Folder){
              print.thres.cex=0.7, grid = TRUE, identity=TRUE,
              axes = TRUE, legacy.axes = TRUE, 
              identity.col = "#a91e0e", col = "#1161d5",
-             main = "probabilities predictions"))
+             main = paste("fold ", f," probabilities")))
   dev.off()
   cat("\n")
   
   
   ###############################################################
   setwd(Folder)
-  write.csv(as.numeric(res.bin$roc$auc), "bin-auc.csv")
-  write.csv(as.numeric(res.bin$macro_auc), "bin-macro-auc.csv")
-  write.csv(as.numeric(res.bin$micro_auc), "bin-micro-auc.csv")
+  write.csv(as.numeric(res.bin$roc$auc), "roc-bin-auc.csv")
+  write.csv(as.numeric(res.bin$macro_auc), "roc-bin-macro-auc.csv")
+  write.csv(as.numeric(res.bin$micro_auc), "roc-bin-micro-auc.csv")
   
   
   ###############################################################
   setwd(Folder)
-  write.csv(as.numeric(res.proba$roc$auc), "proba-auc.csv")
-  write.csv(as.numeric(res.proba$macro_auc), "proba-macro-auc.csv")
-  write.csv(as.numeric(res.proba$micro_auc), "proba-micro-auc.csv")
+  write.csv(as.numeric(res.proba$roc$auc), "roc-proba-auc.csv")
+  write.csv(as.numeric(res.proba$macro_auc), "roc-proba-macro-auc.csv")
+  write.csv(as.numeric(res.proba$micro_auc), "roc-proba-micro-auc.csv")
   
   
   ###############################################################
@@ -898,31 +862,30 @@ roc.curva <- function(predictions, probabilities, test, Folder){
 }
 
 
+##############################################################################
+# 
+##############################################################################
 predictions.information <- function(nomes.rotulos, 
-                                    proba, 
+                                    probas, 
                                     preds, 
                                     trues, 
+                                    thr,
                                     folder){
   
-  #####################################################################
-  pred.o = paste(colnames(preds), "-pred", sep="")
-  names(preds) = pred.o
+  bin.names = paste(nomes.rotulos, "-pred", sep="")
+  names(preds) = bin.names
   
-  true.labels = paste(colnames(trues), "-true", sep="")
-  names(trues) = true.labels
+  thr.names = paste(nomes.rotulos, "-thr", sep="")
+  names(thr) = thr.names
   
-  proba.n = paste(nomes.rotulos, "-proba", sep="")
-  names(proba) = proba.n
+  test.labels = paste(nomes.rotulos, "-true", sep="")
+  names(trues) = test.labels
   
-  all.predictions = cbind(proba, preds, trues)
-  
-  # setwd(folder)
-  # write.csv(all.predictions, "predictions.csv", row.names = FALSE)
+  proba.names = paste(nomes.rotulos, "-proba", sep="")
+  names(probas) = proba.names
   
   ###############################################
-  bipartition = data.frame(trues, preds)
-  
-  # número de instâncias do conjunto
+  bipartition = data.frame(trues, probas)
   num.instancias = nrow(bipartition)
   
   # número de rótulos do conjunto
@@ -1007,12 +970,12 @@ predictions.information <- function(nomes.rotulos,
   matriz_confusao_por_rotulos = data.frame(TPl, FPl, FNl, TNl)
   colnames(matriz_confusao_por_rotulos) = c("TP","FP", "FN", "TN")
   row.names(matriz_confusao_por_rotulos) = nomes.rotulos
-  name = paste(folder, "/my-matrix-confusion.csv", sep="")
+  name = paste(folder, "/my-thr-matrix-confusion.csv", sep="")
   write.csv(matriz_confusao_por_rotulos, name)
   
 }
 
-##################################################################################################
-# Please, any errors, contact us: elainececiliagatto@gmail.com                                   #
-# Thank you very much!                                                                           #
-##################################################################################################
+###############################################################################
+# Please, any errors, contact us: elainececiliagatto@gmail.com                #
+# Thank you very much!                                                        #
+###############################################################################
