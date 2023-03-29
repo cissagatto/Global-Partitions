@@ -65,7 +65,7 @@ n = nrow(datasets)
 FolderJob = paste(FolderRoot, "/jobs", sep = "")
 if (dir.exists(FolderJob) == FALSE) {dir.create(FolderJob)}
 
-FolderCF = "~/Global-Partitions/config-files-ufscar"
+FolderCF = "/Global-Partitions/config-files-apptainer"
 
 
 ###############################################################################
@@ -251,7 +251,7 @@ while(w<=length(pacote)){
     
     write("", file = output.file, append = TRUE)
     write("echo COPYING SINGULARITY", file = output.file, append = TRUE)
-    str.30 = paste("cp /home/u704616/Experimentos.sif ", temp.name, sep ="")
+    str.30 = paste("cp /home/u704616/Experimentos-5.sif ", temp.name, sep ="")
     write(str.30 , file = output.file, append = TRUE)
     
     
@@ -325,14 +325,14 @@ while(w<=length(pacote)){
     write(" ", file = output.file, append = TRUE)
     write("echo INICIALIZANDO O SINGULARITY", file = output.file, append = TRUE)
     str = paste("singularity instance start --bind ~/.config/rclone/:/root/.config/rclone ", 
-                temp.name, "/Experimentos.sif EXPG", a, sep="")
+                temp.name, "/Experimentos-5.sif EXPG", a, sep="")
     write(str, file = output.file, append = TRUE)
     
     
     write(" ", file = output.file, append = TRUE)
     write("echo EXECUTANDO", file = output.file, append = TRUE)
     str = paste("singularity run --app Rscript instance://EXPG", a,
-                " ~/Global-Partitions/R/global.R \"",
+                " /Global-Partitions/R/global.R \"",
                 config.file.name, "\"", sep="")
     write(str, file = output.file, append = TRUE)
     
