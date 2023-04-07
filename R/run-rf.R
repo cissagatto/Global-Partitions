@@ -98,12 +98,10 @@ run.rf <- function(parameters){
   time.gather.files = system.time(gather.files.python(parameters))
   
   
-  
-  # cat("\n\n#################################################")
-  #   cat("\n# RUN: Properties                               #")
-  #   cat("\n#################################################\n\n")
-  # time.properties = system.time(properties.datasets(parameters))
-  
+  cat("\n\n#################################################")
+  cat("\n# RUN: Properties                               #")
+  cat("\n#################################################\n\n")
+  time.properties = system.time(properties.datasets(parameters))
   
   
   cat("\n\n####################################################")

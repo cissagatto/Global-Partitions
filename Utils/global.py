@@ -46,14 +46,14 @@ if __name__ == '__main__':
     train = pd.read_csv(sys.argv[1]) # conjunto de treino
     valid = pd.read_csv(sys.argv[2]) # conjunto de validação
     test = pd.read_csv(sys.argv[3])  # conjunto de teste
-    start = int(sys.argv[4])         # inicio do espaço de rótulos  
-    directory = sys.argv[5]          # diretório para salvar as predições 
+    start = int(sys.argv[4])         # inicio do espaço de rótulos
+    directory = sys.argv[5]          # diretório para salvar as predições
     
-    # train = pd.read_csv("/dev/shm/grf-GpositiveGO/Global/Split-1/GpositiveGO-Split-Tr-1.csv")
-    # test = pd.read_csv("/dev/shm/grf-GpositiveGO/Global/Split-1/GpositiveGO-Split-Ts-1.csv")
-    # valid = pd.read_csv("/dev/shm/grf-GpositiveGO/Global/Split-1/GpositiveGO-Split-Vl-1.csv")
-    # start = 912
-    # directory = "/dev/shm/grf-GpositiveGO/Global/Split-1/"
+    # train = pd.read_csv("/home/biomal/Global-Partitions/Utils/church-Split-Tr-1.csv")
+    # test = pd.read_csv("/home/biomal/Global-Partitions/Utils/church-Split-Ts-1.csv")
+    # valid = pd.read_csv("/home/biomal/Global-Partitions/Utils/church-Split-Vl-1.csv")
+    # start = 27
+    # directory = "/home/biomal/Global-Partitions/Utils"
      
     # juntando treino com validação
     train = pd.concat([train,valid],axis=0).reset_index(drop=True)
@@ -83,46 +83,44 @@ if __name__ == '__main__':
     
     # treino
     rf.fit(X_train, Y_train)
-    
-    # teste
-    y_pred_bin_o = rf.predict(X_test)
-    # y_pred_bin_o.shape[1]
-    # y_pred_bin_o.shape[0]
 
     # predições binárias
-    y_pred_bin_d = pd.DataFrame(rf.predict(X_test)) 
-    # y_pred_bin_d.shape[1]
-    # y_pred_bin_d.shape[0]
+    y_pred_bin = pd.DataFrame(rf.predict(X_test)) 
     
     # renomeando as colunas
-    y_pred_bin_d.columns = labels_y_test
+    y_pred_bin.columns = labels_y_test
 
     # predições probabilísticas
-    y_proba_o = rf.predict_proba(X_test)
+    y_pred_proba = rf.predict_proba(X_test)
     
     # obtendo os rótulos do teste
     y_true = pd.DataFrame(Y_test)
     
     # setando nome do diretorio e arquivo para salvar
     name_true = (directory + "/y_true.csv")          # rótulos do teste 
-    name_pred = (directory + "/y_pred_bin.csv")      # predições do predict
-    name_proba_o = (directory + "/y_proba_o.csv") # predições do predict_proba, todas
+    name_pred_bin = (directory + "/y_pred_bin.csv")      # predições do predict
+    name_pred_proba = (directory + "/y_pred_proba.csv") # predições do predict_proba, todas
     
     # salvando rotulos do teste e das predições binárias
-    y_pred_bin_d.to_csv(name_pred, index=False)
+    y_pred_bin.to_csv(name_pred_bin, index=False)
     y_true.to_csv(name_true, index=False)    
+    
+    # print(y_proba_o[0])
 
     # construindo a tabela com as predições probabilisticas
     # para salvar num formato de dataframe que pode ser usado no R
     ldf1 = []
     ldf2 = []
-    for n in range(0, len(y_proba_o)):
+    # n = 0
+    for n in range(0, len(y_pred_proba)):
       # print(" ", n)
-      res = y_proba_o[n]
+      res = y_pred_proba[n]
       res1 = pd.DataFrame(res)
       res1.columns = [f'prob_{n}_0', f'prob_{n}_1']
       ldf1.append(res1)
+      
     
+    #print(ldf1)
     # salvando
     final = pd.concat(ldf1, axis=1)
-    final.to_csv(name_proba_o, index=False)
+    final.to_csv(name_pred_proba, index=False)

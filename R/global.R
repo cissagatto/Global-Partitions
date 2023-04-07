@@ -89,7 +89,7 @@ cat("\n#####################################\n\n")
 args <- commandArgs(TRUE)
 
 
-#config_file = "/home/biomal/Global-Partitions/config-files-laptop/rf/grf-GpositiveGO.csv"
+# config_file = "/home/biomal/Global-Partitions/config-files-laptop/rf/grf-GpositiveGO.csv"
 
 config_file <- args[1]
 
@@ -307,7 +307,7 @@ if(implementation=="utiml"){
   cat("\n# RSCRIPT COPY TO GOOGLE DRIVE                       #")
   cat("\n######################################################\n\n")
   origem = parameters$Directories$FolderGlobal
-  destino = paste("nuvem:Global/RF/", dataset_name, sep="")
+  destino = paste("nuvem:Global/RandomForests/", dataset_name, sep="")
   comando = paste("rclone -P copy ", origem, " ", destino, sep="")
   cat("\n", comando, "\n") 
   a = print(system(comando))
