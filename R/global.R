@@ -89,7 +89,8 @@ cat("\n#####################################\n\n")
 args <- commandArgs(TRUE)
 
 
-# config_file = "/home/biomal/Global-Partitions/config-files-laptop/rf/grf-GpositiveGO.csv"
+# config_file = "/home/biomal/Global-Partitions/config-files-laptop/clus/gc-GpositiveGO.csv"
+
 
 config_file <- args[1]
 
@@ -400,58 +401,55 @@ if(implementation=="utiml"){
   cat("\n# RSCRIPT SAVE RUNTIME                              #")
   cat("\n#####################################################\n\n")
   result_set <- t(data.matrix(timeFinal))
-  setwd(diretorios$folderGlobal)
+  setwd(parameters$Directories$FolderGlobal)
   write.csv(result_set, "Final-Runtime.csv")
-  x.minutos = (1 * as.numeric(result_set[3]))/60
-  setwd(diretorios$folderGlobal)
-  write(x.minutos, "minutos.txt")
   
   
   cat("\n\n####################################################")
   cat("\n# RSCRIPT DELETE                                   #")
   cat("\n####################################################\n\n")
-  str5 = paste("rm -r ", diretorios$folderDataset, sep="")
+  str5 = paste("rm -r ", parameters$Directories$FolderDataset, sep="")
   print(system(str5))
   
   
   
-  cat("\n\n######################################################")
-  cat("\n# RSCRIPT COPY TO GOOGLE DRIVE                       #")
-  cat("\n######################################################\n\n")
-  origem = diretorios$folderGlobal
-  destino = paste("nuvem:Global/Clus/", dataset_name, sep="")
-  comando = paste("rclone -P copy ", origem, " ", destino, sep="")
-  cat("\n", comando, "\n") 
-  a = print(system(comando))
-  a = as.numeric(a)
-  if(a != 0) {
-    stop("Erro RCLONE")
-    quit("yes")
-  }
+  # cat("\n\n######################################################")
+  # cat("\n# RSCRIPT COPY TO GOOGLE DRIVE                       #")
+  # cat("\n######################################################\n\n")
+  # origem = diretorios$folderGlobal
+  # destino = paste("nuvem:Global/Clus/", dataset_name, sep="")
+  # comando = paste("rclone -P copy ", origem, " ", destino, sep="")
+  # cat("\n", comando, "\n") 
+  # a = print(system(comando))
+  # a = as.numeric(a)
+  # if(a != 0) {
+  #   stop("Erro RCLONE")
+  #   quit("yes")
+  # }
   
+  cat("\n\n###################################################################")
+  cat("\n# GLOBAL: COMPRESS RESULTS                                      #")
+  cat("\n#####################################################################\n\n")
+  str3 = paste("tar -zcvf ", parameters$Directories$FolderGlobal, "/",
+               parameters$Dataset.Info$Name, "-results-global.tar.gz ",
+               parameters$Directories$FolderGlobal, sep="")
+  print(system(str3))
+  
+  
+  cat("\n\n###################################################################")
+  cat("\n# ====> GPC: COPY TO HOME                                     #")
+  cat("\n#####################################################################\n\n")
+  
+  str0 = "~/Global-Partitions/Reports/"
+  if(dir.exists(str0)==FALSE){dir.create(str0)}
+  
+  str3 = paste(parameters$Directories$FolderGlobal, "/",
+               dataset_name, "-results-global.tar.gz", sep="")
+  
+  str4 = paste("cp ", str3, " ", str0, sep="")
+  print(system(str4))
   
 }
-
-
-# cat("\n\n###################################################################")
-# cat("\n# ECC GLOBAL: COMPRESS RESULTS                                      #")
-# cat("\n#####################################################################\n\n")
-# str3 = paste("tar -zcvf ", diretorios$folderResults, "/", 
-#              dataset_name, "-results-global.tar.gz ", 
-#              diretorios$folderResults, sep="")
-# print(system(str3))
-
-
-# cat("\n\n##############################################################")
-# cat("\n# ECC GLOBAL: COPY TO FOLDER REPORTS                           #")
-# cat("\n###############################################################\n\n")
-# str0 = "~/Global-Partitions/Reports/"
-# if(dir.exists(str0)==FALSE){dir.create(str0)}
-# str1 = paste(diretorios$folderResults, "/", dataset_name,
-#              "-results-global.tar.gz", sep="")
-# str4 = paste("cp -r ", str1 , " ", str0, sep="")
-# print(system(str4))
-
 
 
 cat("\n\n#######################################################")

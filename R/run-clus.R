@@ -42,19 +42,12 @@ FolderScripts = "~/Global-Partitions/R"
 # number_folds: number of folds for cross validation                                             # 
 # delete: if you want, or not, to delete all folders and files generated                         #
 ##################################################################################################
-run.clus <- function(ds, 
-                     dataset_name, 
-                     number_dataset, 
-                     number_cores, 
-                     number_folds, 
-                     folderResults){
+run.clus <- function(parameters){
   
   setwd(FolderScripts)
   source("global-clus.R")
   
-  diretorios = directories(dataset_name, folderResults)
-  
-  if(number_cores == 0){
+  if(parameters$Config.File$Number.Cores == 0){
     
     cat("\n\n##########################################################")
     cat("\n# Zero is a disallowed value for number_cores. Please      #")
@@ -63,20 +56,22 @@ run.clus <- function(ds,
     
   } else {
     
-    cl <- parallel::makeCluster(number_cores)
+    cl <- parallel::makeCluster(parameters$Config.File$Number.Cores)
     doParallel::registerDoParallel(cl)
     print(cl)
     
-    if(number_cores==1){
-      cat("\n\n##########################################################")
-      cat("\n# Running Sequentially!                                    #")
-      cat("\n############################################################\n\n")
+    if(parameters$Config.File$Number.Cores==1){
+      cat("\n\n########################################################")
+      cat("\n# Running Sequentially!                                #")
+      cat("\n########################################################\n\n")
     } else {
       cat("\n\n############################################################")
-      cat("\n# Running in parallel with ", number_cores, " cores!         #")
-      cat("\n##############################################################\n\n")
+      cat("\n# Running in parallel with ", parameters$Config.File$Number.Cores, " cores! #")
+      cat("\n############################################################\n\n")
     }
   }
+  
+  
   cl = cl
   
   retorno = list()
@@ -85,50 +80,31 @@ run.clus <- function(ds,
   cat("\n\n#################################################################################")
   cat("\n# RUN: Joins the configuration, training and test files for running the clus      #")
   cat("\n###################################################################################\n\n")
-  time.gather.files = system.time(gather.files.clus(ds, 
-                                                    dataset_name, 
-                                                    number_folds, 
-                                                    folderResults))
+  time.gather.files = system.time(gather.files.clus(parameters))
   
   
   cat("\n\n############################################################")
   cat("\n# RUN: Execute Clus GLOBAL                                   #")
   cat("\n##############################################################\n\n")
-  time.execute = system.time(execute.clus(ds, 
-                                          dataset_name, 
-                                          number_folds, 
-                                          number_cores, 
-                                          folderResults))
+  time.execute = system.time(execute.clus(parameters))
   
   
   cat("\n\n############################################################")
-  cat("\n# RUN: gather predicstionL                                   #")
+  cat("\n# RUN: gather predicstion                                   #")
   cat("\n##############################################################\n\n")
-  time.gather.preds = system.time(gather.predicts.clus(ds, 
-                                                       dataset_name, 
-                                                       number_folds, 
-                                                       number_cores, 
-                                                       folderResults))
+  time.gather.preds = system.time(gather.predicts.clus(parameters))
   
   
   cat("\n\n############################################################")
   cat("\n# RUN: Evaluates Global Partitions                           #")
   cat("\n##############################################################\n\n")
-  time.evaluate = system.time(evaluate.clus(ds, 
-                                            dataset_name, 
-                                            number_folds, 
-                                            number_cores, 
-                                            folderResults))
+  time.evaluate = system.time(evaluate.clus(parameters))
   
   
   cat("\n\n############################################################")
   cat("\n# RUN: Gather Evaluated Measures                             #")
   cat("\n##############################################################\n\n")
-  time.gather.eval = system.time(gather.eval.clus(ds, 
-                                                  dataset_name, 
-                                                  number_folds, 
-                                                  number_cores, 
-                                                  folderResults))
+  time.gather.eval = system.time(gather.eval.clus(parameters))
   
   
   cat("\n\n############################################################")
@@ -138,7 +114,7 @@ run.clus <- function(ds,
                              time.gather.preds, time.evaluate,
                              time.gather.eval)
   
-  setwd(diretorios$folderGlobal)
+  setwd(parameters$Directories$FolderGlobal)
   write.csv(RunTimeGlobal, paste(dataset_name, 
                                  "-RunTime-Clus.csv", sep=""))
   

@@ -66,15 +66,15 @@ n = nrow(datasets)
 ###############################################################################
 # CREATING FOLDER TO SAVE CONFIG FILES                                        #
 ###############################################################################
-FolderCF = paste(FolderRoot, "/config-files-apptainer", sep="")
+FolderCF = paste(FolderRoot, "/config-files-laptop", sep="")
 if(dir.exists(FolderCF)==FALSE){dir.create(FolderCF)}
 
 
 ###############################################################################
 # QUAL Implementation USAR
 ###############################################################################
-Implementation.1 = c("rf")
-Implementation.2 = c("rf")
+Implementation.1 = c("rf", "clus", "utiml", "mulan")
+Implementation.2 = c("r", "c", "u", "m")
 
 
 ###############################################################################
@@ -97,33 +97,18 @@ while(w<=length(Implementation.1)){
     cat("\n\tDataset:", ds$Name)
     cat("\n\tPackge:", Implementation.1[w])
     
-    # Confi File Name
-    # "~/Global-Partitions/config-files/utiml/eg-3s-bbc1000.csv"
     file_name = paste(FolderPa, "/g", Implementation.2[w], "-",
                       ds$Name, ".csv", sep="")
     
-    # Starts building the configuration file
     output.file <- file(file_name, "wb")
     
-    # Config file table header
     write("Config, Value", file = output.file, append = TRUE)
     
-    # write("Dataset_Path, /home/elaine/Datasets", 
-    #      file = output.file, append = TRUE)
-    
-    # write("Dataset_Path, /home/u704616/Datasets", 
-    #      file = output.file, append = TRUE)
-    
-    # write("Dataset_Path, /home/biomal/Datasets",
-    #      file = output.file, append = TRUE)
-    
-    write("Dataset_Path, /Datasets", 
+    write("Dataset_Path, ~/Global-Partitions/Datasets", 
           file = output.file, append = TRUE)
     
     name = paste("g", Implementation.2[w], "-", ds$Name, sep = "")
     
-    # directory name - "/scratch/eg-3s-bbc1000"
-    # temp.name = paste("/tmp/", name, sep = "")
     temp.name = paste("/dev/shm/", name, sep = "")
     
     # Absolute path to the folder where temporary processing will be done. 
@@ -149,7 +134,7 @@ while(w<=length(Implementation.1)){
     write("Number_Folds, 10", file = output.file, append = TRUE)
     
     # Number of cores to use for parallel processing
-    write("Number_Cores, 10", file = output.file, append = TRUE)
+    write("Number_Cores, 1", file = output.file, append = TRUE)
     
     # finish writing to the configuration file
     close(output.file)
