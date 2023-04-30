@@ -89,7 +89,7 @@ cat("\n#####################################\n\n")
 args <- commandArgs(TRUE)
 
 
-# config_file = "/home/biomal/Global-Partitions/config-files-laptop/clus/gc-GpositiveGO.csv"
+# config_file = "~/Global-Partitions/config-files-laptop/clus/gc-GpositiveGO.csv"
 
 
 config_file <- args[1]

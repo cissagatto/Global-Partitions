@@ -123,6 +123,9 @@ run.clus <- function(parameters){
   cat("\n# RUN: Stop Parallel                                         #")
   cat("\n##############################################################\n\n")
   parallel::stopCluster(cl) 	
+  
+  
+  
 }
 
 

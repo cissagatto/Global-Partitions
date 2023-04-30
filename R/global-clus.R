@@ -29,80 +29,118 @@ FolderScripts = "~/Global-Partitions/R"
 ###############################################################################
 #
 ###############################################################################
+
+
+############################################################################
+#
+############################################################################
 gather.files.clus <- function(parameters){
   
-  f = 1
-  foldsParalel <- foreach(f = 1:parameters$Config.File$Number.Folds) %dopar% {
-    # while(f<=number_folds){
+  # from fold = 1 to number_folds
+  s = 1
+  # gfflParalel <- foreach(s = 1:number_folds) %dopar% {
+  while(s<=parameters$Config.File$Number.Folds){
     
-    cat("\nFold: ", f)
+    cat("\nFold: ", s)
+    # creating folder
+    FS = paste(parameters$Directories$FolderGlobal, "/Split-", s, sep="")
+    if(dir.exists(FS)==FALSE){dir.create(FS)}
     
-    ###########################################################################
-    FolderRoot = "~/Global-Partitions"
-    FolderScripts = "~/Global-Partitions/R"
-    
-    ###########################################################################
-    setwd(FolderScripts)
-    source("libraries.R")
-    
-    setwd(FolderScripts)
-    source("utils.R")
-    
-    
-    ###########################################################################
-    FolderSplit = paste(parameters$Directories$FolderGlobal, "/Split-", 
-                        f, sep="")
-    if(dir.exists(FolderSplit)==FALSE){dir.create(FolderSplit)}
-    
-    ###########################################################################
     # names files
-    nome.tr.csv = paste(parameters$Config.File$Dataset.Name , 
-                        "-Split-Tr-", f, ".arff", sep="")
-    nome.ts.csv = paste(parameters$Config.File$Dataset.Name, 
-                        "-Split-Ts-", f, ".arff", sep="")
-    nome.vl.csv = paste(parameters$Config.File$Dataset.Name, 
-                        "-Split-Vl-", f, ".arff", sep="")
+    nome_tr = paste(parameters$Config.File$Dataset.Name, "-Split-Tr-", s, ".arff", sep="")
+    nome_ts = paste(parameters$Config.File$Dataset.Name, "-Split-Ts-", s, ".arff", sep="")
+    nome_vl = paste(parameters$Config.File$Dataset.Name, "-Split-Vl-", s, ".arff", sep="")
     
-    # train
+    # copying train files
     setwd(parameters$Directories$FolderCVTR)
-    if(file.exists(nome.tr.csv) == TRUE){
+    if(file.exists(nome_tr) == TRUE){
       setwd(parameters$Directories$FolderCVTR)
-      copia = paste(parameters$Directories$FolderCVTR, "/", 
-                    nome.tr.csv, sep="")
-      cola = paste(FolderSplit, "/", nome.tr.csv, sep="")
+      copia = paste(parameters$Directories$FolderCVTR, "/", nome_tr, sep="")
+      cola = paste(FS, "/", nome_tr, sep="")
       file.copy(copia, cola, overwrite = TRUE)
+    } else {
+      break
     }
     
-    # test
+    # copying test files
     setwd(parameters$Directories$FolderCVTS)
-    if(file.exists(nome.ts.csv) == TRUE){
+    if(file.exists(nome_ts) == TRUE){
       setwd(parameters$Directories$FolderCVTS)
-      copia = paste(parameters$Directories$FolderCVTS, "/", 
-                    nome.ts.csv, sep="")
-      cola = paste(FolderSplit, "/", nome.ts.csv, sep="")
+      copia = paste(parameters$Directories$FolderCVTS, "/", nome_ts, sep="")
+      cola = paste(FS, "/", nome_ts, sep="")
       file.copy(copia, cola, overwrite = TRUE)
+    } else {
+      break
     }
     
-    # validation
+    # copying test files
     setwd(parameters$Directories$FolderCVVL)
-    if(file.exists(nome.vl.csv) == TRUE){
+    if(file.exists(nome_vl) == TRUE){
       setwd(parameters$Directories$FolderCVVL)
-      copia = paste(parameters$Directories$FolderCVVL, "/", 
-                    nome.vl.csv, sep="")
-      cola = paste(FolderSplit, "/", nome.vl.csv, sep="")
+      copia = paste(parameters$Directories$FolderCVVL, "/", nome_vl, sep="")
+      cola = paste(FS, "/", nome_vl, sep="")
       file.copy(copia, cola, overwrite = TRUE)
+    } else {
+      break
     }
     
-    # f = f + 1
+    setwd(parameters$Directories$FolderCVVL)
+    validation = data.frame(foreign::read.arff(nome_vl))
+    
+    setwd(parameters$Directories$FolderCVTR)
+    train = data.frame(foreign::read.arff(nome_tr))
+    
+    treino = rbind(train, validation)
+    
+    #unlink(nome_ts)
+    unlink(nome_vl)
+    unlink(nome_tr)
+    
+    nome_tr_2 = paste(FS, "/", parameters$Config.File$Dataset.Name, "-Split-Tr-", s, ".csv", sep="")
+    write.csv(treino, nome_tr_2, row.names = FALSE)
+    
+    ########################################################################
+    converteArff <- function(arg1, arg2, arg3, folderUtils){
+      str = paste("java -jar ", parameters$Directories$FolderUtils,
+                  "/R_csv_2_arff.jar ", arg1, " ", arg2, " ", arg3, sep="")
+      print(system(str))
+      cat("\n\n")
+    }
+    
+    #########################################################################
+    # Targets
+    inicio = parameters$Dataset.Info$LabelStart
+    fim = ncol(treino)
+    ifr = data.frame(inicio, fim)
+    write.csv(ifr, "inicioFimRotulos.csv", row.names = FALSE)
+    
+    
+    ########################################################################
+    # TRAIN: Convert CSV to ARFF
+    arg1Tr = nome_tr_2
+    arg2Tr = paste(FS, "/", nome_tr, sep="")
+    arg3Tr = paste(inicio, "-", fim, sep="")
+    converteArff(arg1Tr, arg2Tr, arg3Tr, parameters$Directories$FolderUtils)
+    
+    
+    #########################################################################
+    str0 = paste("sed -i 's/{0}/{0,1}/g;s/{1}/{0,1}/g' ", arg2Tr, sep="")
+    print(system(str0))
+    
+    # unlink(nome_tr_2)
+    
+    s = s + 1
     gc()
   }
   
   gc()
-  cat("\n###############################################################")
-  cat("\n# GLOBAL CLUS: END OF THE GATHER FILES FOLDS FUNCTION         #")
-  cat("\n###############################################################")
-  cat("\n\n")
+  cat("\n#########################################################")
+  cat("\n# END FUNCTION COPY                                     #") 
+  cat("\n#########################################################")
+  cat("\n\n\n\n")
+  
 }
+
 
 
 
