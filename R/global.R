@@ -304,6 +304,29 @@ if(implementation=="utiml"){
   print(system(str5))
   
   
+  cat("\n\n###################################################################")
+  cat("\n# GLOBAL: COMPRESS RESULTS                                      #")
+  cat("\n#####################################################################\n\n")
+  str3 = paste("tar -zcvf ", parameters$Directories$FolderGlobal, "/",
+               parameters$Dataset.Info$Name, "-results-global.tar.gz ",
+               parameters$Directories$FolderGlobal, sep="")
+  print(system(str3))
+  
+  
+  cat("\n\n###################################################################")
+  cat("\n# ====> GPC: COPY TO HOME                                     #")
+  cat("\n#####################################################################\n\n")
+  
+  str0 = "~/Global-Partitions/Reports/"
+  if(dir.exists(str0)==FALSE){dir.create(str0)}
+  
+  str3 = paste(parameters$Directories$FolderGlobal, "/",
+               dataset_name, "-results-global.tar.gz", sep="")
+  
+  str4 = paste("cp ", str3, " ", str0, sep="")
+  print(system(str4))
+  
+  
   cat("\n\n######################################################")
   cat("\n# RSCRIPT COPY TO GOOGLE DRIVE                       #")
   cat("\n######################################################\n\n")
@@ -427,27 +450,6 @@ if(implementation=="utiml"){
   #   quit("yes")
   # }
   
-  cat("\n\n###################################################################")
-  cat("\n# GLOBAL: COMPRESS RESULTS                                      #")
-  cat("\n#####################################################################\n\n")
-  str3 = paste("tar -zcvf ", parameters$Directories$FolderGlobal, "/",
-               parameters$Dataset.Info$Name, "-results-global.tar.gz ",
-               parameters$Directories$FolderGlobal, sep="")
-  print(system(str3))
-  
-  
-  cat("\n\n###################################################################")
-  cat("\n# ====> GPC: COPY TO HOME                                     #")
-  cat("\n#####################################################################\n\n")
-  
-  str0 = "~/Global-Partitions/Reports/"
-  if(dir.exists(str0)==FALSE){dir.create(str0)}
-  
-  str3 = paste(parameters$Directories$FolderGlobal, "/",
-               dataset_name, "-results-global.tar.gz", sep="")
-  
-  str4 = paste("cp ", str3, " ", str0, sep="")
-  print(system(str4))
   
 }
 
