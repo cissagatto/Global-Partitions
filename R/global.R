@@ -97,7 +97,7 @@ args <- commandArgs(TRUE)
 
 config_file <- args[1]
 
-# config_file = "~/Global-Partitions/config-files/rf/gr-emotions.csv"
+# config_file = "~/Global-Partitions/config-files/gr-emotions.csv"
 
 parameters$Config.File.Name = config_file
 if(file.exists(config_file)==FALSE){
