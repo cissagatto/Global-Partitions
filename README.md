@@ -6,7 +6,7 @@ This repository is part of my PhD research at PPG-CC-DC-UFSCar, in collaboration
 If you use this code in your research, please cite the following:
 
 ```bibtex
-@misc{Gatto2023,
+@misc{Gatto2025,
   author = {Gatto, E. C.},
   title = {Global Partitions for Multilabel Classification with Clus},
   year = {2022},
