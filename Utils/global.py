@@ -1,6 +1,6 @@
 ##############################################################################
-# GLOBAL PARTITIONS                                                          #
-# Copyright (C) 2023                                                         #
+# GLOBAL PARTITIONS MULTI-LABEL CLASSIFICATION                               #
+# Copyright (C) 2025                                                         #
 #                                                                            #
 # This code is free software: you can redistribute it and/or modify it under #
 # the terms of the GNU General Public License as published by the Free       #
@@ -10,31 +10,40 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General   #
 # Public License for more details.                                           #
 #                                                                            #
-# 1 - PhD Elaine Cecilia Gatto | Prof PhD Ricardo Cerri                      #
-# 2 - Prof PhD Mauri Ferrandin                                               #
-# 3 - Prof PhD Celine Vens | PhD Felipe Nakano Kenji                         #
-# 4 - Prof PhD Jesse Read                                                    #
+# 1 - Prof PhD Elaine Cecilia Gatto                                          #
+# 2 - Prof PhD Ricardo Cerri                                                 #
+# 3 - Prof PhD Mauri Ferrandin                                               #
+# 4 - Prof PhD Celine Vens                                                   #
+# 5 - PhD Felipe Nakano Kenji                                                #
+# 6 - Prof PhD Jesse Read                                                    #
 #                                                                            #
 # 1 = Federal University of São Carlos - UFSCar - https://www2.ufscar.br     #
 # Campus São Carlos | Computer Department - DC - https://site.dc.ufscar.br | #
 # Post Graduate Program in Computer Science - PPGCC                          # 
 # http://ppgcc.dc.ufscar.br | Bioinformatics and Machine Learning Group      #
 # BIOMAL - http://www.biomal.ufscar.br                                       # 
-#                                                                            #
-# 2 - Federal University of Santa Catarina Campus Blumenau - UFSC            #
+#                                                                            # 
+# 1 = Federal University of Lavras - UFLA                                    #
+#                                                                            # 
+# 2 = State University of São Paulo - USP                                    #
+#                                                                            # 
+# 3 - Federal University of Santa Catarina Campus Blumenau - UFSC            #
 # https://ufsc.br/                                                           #
 #                                                                            #
-# 3 - Katholieke Universiteit Leuven Campus Kulak Kortrijk Belgium           #
+# 4 and 5 - Katholieke Universiteit Leuven Campus Kulak Kortrijk Belgium     #
 # Medicine Department - https://kulak.kuleuven.be/                           #
 # https://kulak.kuleuven.be/nl/over_kulak/faculteiten/geneeskunde            #
 #                                                                            #
-# 4 - Ecole Polytechnique | Institut Polytechnique de Paris | 1 rue Honoré   #
+# 6 - Ecole Polytechnique | Institut Polytechnique de Paris | 1 rue Honoré   #
 # d’Estienne d’Orves - 91120 - Palaiseau - FRANCE                            #
 #                                                                            #
 ##############################################################################
 
 
 import sys
+import os
+import pickle
+from joblib import dump
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier  
@@ -124,3 +133,43 @@ if __name__ == '__main__':
     # salvando
     final = pd.concat(ldf1, axis=1)
     final.to_csv(name_pred_proba, index=False)
+            
+    # List to store model size information
+    model_sizes = []
+    
+    # Save the model using pickle
+    model_path = (directory + "/model_rf.pkl")
+    with open(model_path, "wb") as f:
+        pickle.dump(rf, f)
+    
+    # Get the file size
+    file_size_bytes = os.path.getsize(model_path)  # in bytes
+    file_size_kb = file_size_bytes / 1024  # convert to KB
+    file_size_mb = file_size_kb / 1024  # convert to MB
+    
+    # Store in the list
+    model_sizes.append(["pickle", file_size_bytes, file_size_kb, file_size_mb])
+    
+    print(f"Pickle model size: {file_size_mb:.2f} MB")
+    
+    # Save the model using joblib
+    model_path = (directory + "/model_rf.joblib")
+    dump(rf, model_path)
+    
+    # Get the file size
+    file_size_bytes = os.path.getsize(model_path)  # in bytes
+    file_size_kb = file_size_bytes / 1024  # convert to KB
+    file_size_mb = file_size_kb / 1024  # convert to MB
+    
+    # Store in the list
+    model_sizes.append(["joblib", file_size_bytes, file_size_kb, file_size_mb])
+    
+    print(f"Joblib model size: {file_size_mb:.2f} MB")
+    
+    # Create a DataFrame and save to a single CSV
+    name_csv = (directory + "/model_sizes.csv")
+    df_size = pd.DataFrame(model_sizes, columns=["Format", "Size (Bytes)", "Size (KB)", "Size (MB)"])
+    df_size.to_csv(name_csv, index=False)
+    
+    print("Model sizes saved to 'model_sizes.csv'")
+
