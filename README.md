@@ -78,7 +78,7 @@ For new datasets, you can generate these files by following the instructions in 
 ### STEP 3: Required Libraries 📦
 Ensure that all necessary Java, R, and Python libraries are installed on your system. This code does not automatically install packages! 🚨
 
-You can set up a [Conda environment](https://1drv.ms/u/s!Aq6SGcf6js1mw4hbhU9Raqarl8bH8Q?e=IA2aQs) to run the experiment. To extract the environment, use the following command:
+You can use the [Conda Environment](https://1drv.ms/u/s!Aq6SGcf6js1mw4hbhU9Raqarl8bH8Q?e=IA2aQs) that I created to perform this experiment. Below are the links to download the files. Try to use the command below to extract the environment to your computer:
 
 ```
 conda env create -f AmbienteTeste.yaml
