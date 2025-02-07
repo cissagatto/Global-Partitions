@@ -114,15 +114,13 @@ This code can run in parallel, and it's highly recommended to use parallel proce
 
 The code was tested on the following machine:
 
-**System:**
-- Host: `bionote`
-- Kernel: `5.8.0-53-generic`
-- OS: Ubuntu 20.04.2 LTS
+*System:*
 
-**CPU:**
-- 6-Core Intel Core i7-10750H
-- 12 MB L2 Cache
-- 2.6 GHz Clock Speed
+Host: bionote | Kernel: 5.8.0-53-generic | x86_64 bits: 64 | Desktop: Gnome 3.36.7 | Distro: Ubuntu 20.04.2 LTS (Focal Fossa)
+
+*CPU:*
+
+Topology: 6-Core | model: Intel Core i7-10750H | bits: 64 | type: MT MCP | L2 cache: 12.0 MiB | Speed: 800 MHz | min/max: 800/5000 MHz Core speeds (MHz): | 1: 800 | 2: 800 | 3: 800 | 4: 800 | 5: 800 | 6: 800 | 7: 800 | 8: 800 | 9: 800 | 10: 800 | 11: 800 | 12: 800 |
 
 For cluster execution, we used a UFSCar cluster.
 
